@@ -21,3 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Krona ERP"
 include(":app")
+include(":core")
+include(":core:network")
+include(":feature")
+include(":feature:auth")
+include(":core:uikit")
