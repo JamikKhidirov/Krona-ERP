@@ -113,11 +113,28 @@ fun RegisterScreen(){
                 )
 
                 // Поля ввода
-                KronaTextField(name, { name = it }, "ФИО", "Иванов Иван Иванович", Icons.Default.Person)
-                KronaTextField(login, { login = it }, "Логин", "Введите логин", Icons.Default.AccountCircle)
+                KronaTextField(
+                    value = name, onValueChange =  { name = it },
+                    label = "ФИО",
+                    placeholder = "Иванов Иван Иванович",
+                    leadingIcon = Icons.Default.Person)
+
+                KronaTextField(value = login,
+                    onValueChange = { login = it },
+                    label = "Логин",
+                    placeholder = "Введите логин",
+                    leadingIcon = Icons.Default.AccountCircle)
 
                 // Поле выбора роли (упрощено)
-                KronaTextField(role, { }, "Роль в системе", "Выберите роль", Icons.Default.List)
+                KronaTextField(
+                    value = role,
+                    onValueChange = {newRole ->
+                        role = newRole
+                    }
+                    , label = "Роль в системе",
+                    placeholder = "Выберите роль",
+                    leadingIcon = Icons.Default.List
+                )
 
                 // Подсказка про Менеджера
                 Text(
@@ -128,10 +145,29 @@ fun RegisterScreen(){
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
 
-                KronaTextField(orgCode, { orgCode = it }, "Код доступа организации", "Введите код доступа", Icons.Default.Lock)
-                KronaTextField(password, { password = it }, "Пароль", "••••••••", Icons.Default.Lock, PasswordVisualTransformation()
+                KronaTextField(
+                    value =  orgCode,
+                    onValueChange = { orgCode = it },
+                    label =  "Код доступа организации",
+                    placeholder = "Введите код доступа",
+                    leadingIcon =  Icons.Default.Lock
                 )
-                KronaTextField(confirmPassword, { confirmPassword = it }, "Подтверждение пароля", "••••••••", Icons.Default.Refresh, PasswordVisualTransformation())
+                KronaTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = "Пароль",
+                    placeholder = "••••••••",
+                    leadingIcon = Icons.Default.Lock,
+                    visualTransformation = PasswordVisualTransformation()
+                )
+                KronaTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = "Подтверждение пароля",
+                    placeholder = "••••••••",
+                    leadingIcon = Icons.Default.Refresh,
+                    visualTransformation = PasswordVisualTransformation()
+                )
 
                 // Кнопка регистрации (используем ваш стиль из предыдущего вопроса)
                 Button(
