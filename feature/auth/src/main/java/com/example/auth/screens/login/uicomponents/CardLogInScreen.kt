@@ -1,4 +1,4 @@
-package com.example.auth.uicomponents
+package com.example.auth.screens.login.uicomponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,9 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.auth.R
+import com.example.auth.uicomponents.AuthButton
+import com.example.auth.uicomponents.AuthButtonState
+import com.example.auth.uicomponents.AuthTextFild
+import com.example.auth.uicomponents.AuthTextFildState
 import com.example.uikit.AuthText
-import kotlinx.coroutines.newSingleThreadContext
-import kotlin.math.log
 
 
 @Composable
@@ -110,7 +112,7 @@ fun CardLogInScreen(
                                 top = 4.dp
                             )
                             .height(50.dp),
-                        onValueTextChange = {newLogin ->
+                        onValueTextChange = { newLogin ->
                             loginText = newLogin
                             onNewLogin(newLogin)
                         },
@@ -131,7 +133,7 @@ fun CardLogInScreen(
                         modifier = Modifier
                             .padding(top = 4.dp)
                             .height(50.dp),
-                        onValueTextChange = {newPassword ->
+                        onValueTextChange = { newPassword ->
                             passwordText = newPassword
                             onNewPassword(newPassword)
                         },

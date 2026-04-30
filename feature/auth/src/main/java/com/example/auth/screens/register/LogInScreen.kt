@@ -1,4 +1,4 @@
-package com.example.auth.screens
+package com.example.auth.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.auth.uicomponents.CardLogInScreen
+import com.example.auth.screens.login.uicomponents.CardLogInScreen
 
 
 @Preview(showBackground = true)
