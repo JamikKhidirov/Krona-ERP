@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.example.client.data.ProductType
 
 
 @Preview(showBackground = true)
@@ -52,13 +52,11 @@ fun HeaderSection() {
 }
 
 @Composable
-@Preview(showBackground = true)
 fun ProductTypeGrid(
-    selectedType: String = "",
-    onTypeSelected: (String) -> Unit = {}
+    items: List<ProductType>,
+    selectedId: Int,
+    onTypeSelected: (Int) -> Unit
 ) {
-    val items = listOf("Стул / Кресло", "Стол", "Кровать", "Шкаф", "Кухня", "Другое")
-
     Text(
         "ТИП ИЗДЕЛИЯ",
         fontSize = 12.sp,
@@ -68,54 +66,55 @@ fun ProductTypeGrid(
     Spacer(Modifier.height(8.dp))
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        for (i in items.indices step 2) {
+        // Разбиваем список на пары для сетки 2 x N
+        val rows = items.chunked(2)
+        for (rowItems in rows) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                // Первый элемент в строке
-                ProductItem(
-                    title = items[i],
-                    isSelected = items[i] == selectedType,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onTypeSelected(items[i]) } // Логика клика
-                )
-                // Второй элемент в строке
-                ProductItem(
-                    title = items[i+1],
-                    isSelected = items[i+1] == selectedType,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onTypeSelected(items[i+1]) } // Логика клика
-                )
+                for (item in rowItems) {
+                    ProductItem(
+                        item = item,
+                        isSelected = item.id == selectedId,
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onTypeSelected(item.id) }
+                    )
+                }
+                // Если в строке только один элемент (нечетное количество), добавляем пустой вес
+                if (rowItems.size < 2) {
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
     }
 }
 
-
 @Composable
-fun ProductItem(title: String, isSelected: Boolean, modifier: Modifier) {
+fun ProductItem(
+    item: ProductType,
+    isSelected: Boolean,
+    modifier: Modifier
+) {
     Surface(
         modifier = modifier.height(80.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, if (isSelected) Color(0xFF6366F1) else Color(0xFFE2E8F0)),
         color = if (isSelected) Color(0xFFF5F3FF) else Color.White,
-        tonalElevation = if (isSelected) 2.dp else 0.dp // Легкое выделение
+        tonalElevation = if (isSelected) 2.dp else 0.dp
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(8.dp)
         ) {
-            // Иконки можно менять в зависимости от названия, но для примера оставим Home
             Icon(
-                imageVector = Icons.Default.Home,
+                imageVector = item.icon,
                 contentDescription = null,
                 tint = if (isSelected) Color(0xFF6366F1) else Color.Gray,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = title,
+                text = item.title,
                 fontSize = 12.sp,
                 fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
                 color = if (isSelected) Color(0xFF6366F1) else Color.DarkGray
