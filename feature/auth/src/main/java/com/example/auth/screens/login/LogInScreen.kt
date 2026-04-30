@@ -1,4 +1,4 @@
-package com.example.auth.screens.register
+package com.example.auth.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
