@@ -40,7 +40,6 @@ import com.example.client.uicomponents.SubmitButton
 @Preview(showBackground = true)
 fun NewOrderScreen() {
 
-    var selectedType by remember { mutableStateOf("Стул / Кресло") }
 
     var description by remember { mutableStateOf("") }
     var budget by remember { mutableStateOf("50 000") }

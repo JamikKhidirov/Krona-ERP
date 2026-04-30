@@ -17,8 +17,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+.log
 
-
+.kotlin/
 
 # Gradle и сборка
 .gradle/
