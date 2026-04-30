@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +38,9 @@ import kotlin.math.log
 fun CardLogInScreen(
     modifier: Modifier = Modifier,
     onNewLogin: (String) -> Unit = {},
-    onNewPassword: (String) -> Unit  = {}
+    onNewPassword: (String) -> Unit = {},
+    onLogInClickButton: (login: String, password: String) -> Unit = { _, _ ->},
+    onClickRegisterButton: () -> Unit = {}
 ){
     var passwordText by remember {
         mutableStateOf("")
@@ -49,8 +52,14 @@ fun CardLogInScreen(
     Card(
         modifier = modifier
             .width(342.dp)
-            .height(636.dp),
-        shape = RoundedCornerShape(16.dp)
+            .height(646.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 20.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF7F9FB)
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -128,6 +137,30 @@ fun CardLogInScreen(
                         },
                         value = passwordText
                     )
+
+
+                    AuthButton(
+                        buttonState = AuthButtonState.LOGIN,
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = 10.dp),
+                        onClickButton = {
+                            onLogInClickButton(
+                                loginText,
+                                passwordText
+                            )
+                        }
+                    )
+
+                    AuthButton(
+                        buttonState = AuthButtonState.REGISTER,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        onClickButton = {
+                            onClickRegisterButton()
+                        }
+                    )
+
 
 
                 }
