@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.auth.screens.register.uicomponents.ButtonAuthNavLogIn
 import com.example.auth.screens.register.uicomponents.ManualRoleDropdown
 import com.example.auth.uicomponents.KronaTextField
 
@@ -130,15 +131,18 @@ fun RegisterScreen() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("Зарегистрироваться", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.width(8.dp))
-                        Icon(Icons.Default.ArrowForward, contentDescription = null)
                     }
                 }
 
                 // Футер
-                Row(modifier = Modifier.padding(top = 24.dp)) {
-                    Text("Уже есть аккаунт? ", fontSize = 14.sp, color = Color.Gray)
-                    Text("Войти", fontSize = 14.sp, color = Color(0xFF25326A), fontWeight = FontWeight.Bold, modifier = Modifier.clickable { })
-                }
+                ButtonAuthNavLogIn (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp),
+                    onClickButton = {
+
+                    }
+                )
             }
         }
     }
