@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "801223807810",
+    "project_id": "krona-erp",
+    "storage_bucket": "krona-erp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801223807810:android:36a7321e13327142406edb",
+        "android_client_info": {
+          "package_name": "com.example.kronaerp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVxiedFDdm2GPdQRDXGQsHp5YE4WmsB6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,5 @@
-package com.example.auth.uicomponents
+package com.example.auth.uikit
 
-import androidx.compose.animation.animateBounds
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
