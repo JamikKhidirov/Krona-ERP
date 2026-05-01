@@ -62,6 +62,11 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
 
+    implementation("androidx.compose.material:material-icons-core:1.7.4")
+    implementation("androidx.compose.material:material-icons-extended:1.7.4")
+    implementation("androidx.compose.material3:material3:1.3.0")
+
+
     implementation("com.google.dagger:hilt-android:2.57.1")
     kapt("com.google.dagger:hilt-compiler:2.57.1")
 
