@@ -28,10 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.auth.R
-import com.example.auth.uicomponents.AuthButton
-import com.example.auth.uicomponents.AuthButtonState
-import com.example.auth.uicomponents.AuthTextFild
-import com.example.auth.uicomponents.AuthTextFildState
+import com.example.auth.uikit.AuthButton
+import com.example.auth.uikit.AuthButtonState
+import com.example.auth.uikit.AuthTextFild
+import com.example.auth.uikit.AuthTextFildState
 import com.example.uikit.AuthText
 
 

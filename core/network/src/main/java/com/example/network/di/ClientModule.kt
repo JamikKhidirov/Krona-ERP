@@ -1,4 +1,4 @@
-package com.example.client.di
+package com.example.network.di
 
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
