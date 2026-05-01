@@ -9,11 +9,10 @@ import javax.inject.Singleton
 
 
 @Singleton
-class AuthRepository @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val db: FirebaseFirestore
-){
+class AuthRepository @Inject constructor(){
 
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val ADMIN_ACCESS_CODE = "admin787898"
 
     suspend fun registerUser(

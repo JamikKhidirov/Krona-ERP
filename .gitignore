@@ -24,5 +24,6 @@ local.properties
 # Gradle и сборка
 .gradle/
 build/
+*.idea/
 
 

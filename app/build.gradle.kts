@@ -9,7 +9,13 @@ plugins {
 
     id("com.google.dagger.hilt.android")
 
+    id("com.google.gms.google-services")
+
 }
+
+
+
+
 
 android {
     namespace = "com.example.kronaerp"
@@ -47,6 +53,8 @@ android {
         compose = true
     }
 }
+
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
