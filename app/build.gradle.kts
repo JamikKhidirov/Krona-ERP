@@ -4,9 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
 
-    id("com.google.dagger.hilt.android")
 
     kotlin("kapt")
+
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -66,6 +68,12 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.57.1")
     kapt("com.google.dagger:hilt-compiler:2.57.1")
+
+
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
 
 
 

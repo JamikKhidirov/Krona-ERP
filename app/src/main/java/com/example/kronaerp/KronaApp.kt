@@ -9,8 +9,10 @@ import dagger.hilt.android.HiltAndroidApp
 class KronaApp: Application() {
 
     override fun onCreate() {
+
+        FirebaseApp.initializeApp(this)
         super.onCreate()
         // Явная инициализация Firebase ДО того, как Hilt начнёт инжектить зависимости
-        FirebaseApp.initializeApp(this)
+
     }
 }
