@@ -26,6 +26,11 @@ fun OrderDetailScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
+
+    LaunchedEffect(orderId) {
+        viewModel.loadOrder(orderId)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -61,7 +66,7 @@ fun OrderDetailScreen(
                 error != null -> {
                     ErrorState(
                         message = error ?: "Ошибка загрузки",
-                        onRetry = { viewModel.refresh() }
+                        onRetry = { viewModel.refresh(orderId) }
                     )
                 }
                 order != null -> {

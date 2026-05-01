@@ -20,40 +20,42 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderDetailViewModel @Inject constructor(
     private val repository: OrderDetailRepository,
-    private val savedStateHandle: SavedStateHandle
 ): ViewModel(){
-
-    private val orderId: String = checkNotNull(savedStateHandle["orderId"])
 
     private val _order = MutableStateFlow<Order?>(null)
     val order: StateFlow<Order?> = _order.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(true)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    init {
-        loadOrder()
-    }
 
 
-    private fun loadOrder() {
+    fun loadOrder(orderId: String) {
+        if (orderId.isEmpty()) {
+            _error.value = "ID заказа пустой"
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
+
             repository.getOrderById(orderId)
                 .onSuccess { data ->
                     _order.value = data
-                    _error.value = null
                 }
-                .onFailure {
-                    _error.value = it.message
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка загрузки"
                 }
+
             _isLoading.value = false
         }
     }
 
-    fun refresh() = loadOrder()
+    fun refresh(orderId: String) = loadOrder(orderId)
+
 
 }
