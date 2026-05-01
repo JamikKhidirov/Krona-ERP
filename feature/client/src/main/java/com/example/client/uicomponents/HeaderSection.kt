@@ -114,7 +114,7 @@ fun ProductItem(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = item.title,
+                text = item.name,
                 fontSize = 12.sp,
                 fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
                 color = if (isSelected) Color(0xFF6366F1) else Color.DarkGray

@@ -2,6 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+
+    id("com.google.dagger.hilt.android")
+
+    kotlin("kapt")
 }
 
 android {
@@ -58,7 +63,15 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    kapt("com.google.dagger:hilt-compiler:2.57.1")
+
+
+
+
     implementation(project(":core:network"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:client"))
 
 }

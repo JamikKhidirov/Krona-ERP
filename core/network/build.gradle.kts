@@ -50,7 +50,10 @@ dependencies {
 
 
 
-    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
-    implementation("com.google.firebase:firebase-auth") // убрали ktx
-    implementation("com.google.firebase:firebase-firestore") // убрали ktx
+    api(platform("com.google.firebase:firebase-bom:34.12.0"))
+    api("com.google.firebase:firebase-auth") // убрали ktx
+    api("com.google.firebase:firebase-firestore") // убрали ktx
+
+
+    api("com.google.firebase:firebase-storage")
 }
