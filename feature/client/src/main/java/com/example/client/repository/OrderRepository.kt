@@ -18,10 +18,11 @@ import javax.inject.Singleton
 
 
 @Singleton
-class OrderRepository @Inject constructor() {
+class OrderRepository @Inject constructor(
+    private val firestore: FirebaseFirestore,
+    private val storage: FirebaseStorage
+) {
 
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
     private val ordersCollection = firestore.collection("orders")
 
