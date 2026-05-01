@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.client.screens.orderdetailscreen.core.getStatusConfig
 import com.example.client.screens.orderdetailscreen.data.StatusUpdate
@@ -102,5 +103,38 @@ fun TimelineItem(
                 )
             }
         }
+    }
+}
+
+
+
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewTimeLineItem(){
+    Column {
+        TimelineItem(
+            status = StatusUpdate(),
+            isLast = true,
+            isFirst = false
+        )
+
+        TimelineItem(
+            status = StatusUpdate(),
+            isLast = false,
+            isFirst = true
+        )
+
+        TimelineItem(
+            status = StatusUpdate(),
+            isLast = true,
+            isFirst = true
+        )
+
+        TimelineItem(
+            status = StatusUpdate(),
+            isLast = false,
+            isFirst = false
+        )
     }
 }
