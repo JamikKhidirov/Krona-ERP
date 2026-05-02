@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class AuthRepository @Inject constructor(
+class AuthRepositoryR @Inject constructor(
     private val auth: FirebaseAuth,
     private val db: FirebaseFirestore
 ){
