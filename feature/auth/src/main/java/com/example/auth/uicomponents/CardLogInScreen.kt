@@ -73,7 +73,6 @@ fun CardLogInScreen(
                     AuthText(
                         text = "Логин",
                         modifier = Modifier,
-                        textAlign = TextAlign.Start
                     )
 
 
