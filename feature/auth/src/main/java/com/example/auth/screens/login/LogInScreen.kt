@@ -1,6 +1,8 @@
 package com.example.auth.screens.login
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,16 +45,16 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(
+fun LogInScreen(
     onNavigateToRegister: () -> Unit,
     onLoginSuccess: (String) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var logInText by remember { mutableStateOf("") }
+    var passwordText by remember { mutableStateOf("") }
+
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    var passwordVisible by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -59,50 +62,36 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(Color(0xFFF5F5F7)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Крона", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFF25326A))
-        Text("Вход в систему", fontSize = 18.sp, color = Color.Gray, modifier = Modifier.padding(bottom = 32.dp))
-
-        OutlinedTextField(
-            value = login,
-            onValueChange = { login = it.filter { c -> !c.isWhitespace() } },
-            label = { Text("Логин") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = null
-                    )
+        CardLogInScreen(
+            onNewLogin = { login ->
+                logInText = login.filter { !it.isWhitespace() }
+                errorMessage = null
+            },
+            onNewPassword = { password ->
+                passwordText = password
+                errorMessage = null
+            },
+            onClickRegisterButton = {
+                onNavigateToRegister()
+            },
+            onLogInClickButton = { login, password ->
+                // Валидация
+                if (login.isBlank()) {
+                    errorMessage = "Введите логин"
+                    return@CardLogInScreen
                 }
-            }
-        )
+                if (password.length < 6) {
+                    errorMessage = "Пароль должен быть минимум 6 символов"
+                    return@CardLogInScreen
+                }
 
-        errorMessage?.let {
-            Text(it, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
                 isLoading = true
                 errorMessage = null
+
                 scope.launch {
                     viewModel.login(login.trim(), password).fold(
                         onSuccess = { role ->
@@ -112,25 +101,26 @@ fun LoginScreen(
                         },
                         onFailure = { error ->
                             isLoading = false
-                            errorMessage = error.message
+                            errorMessage = error.message ?: "Ошибка входа"
                         }
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            enabled = login.isNotBlank() && password.isNotBlank() && !isLoading
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
-            } else {
-                Text("Войти")
             }
-        }
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        TextButton(onClick = onNavigateToRegister) {
-            Text("Нет аккаунта? Зарегистрироваться", color = Color(0xFF25326A))
+        // Сообщение об ошибке под карточкой (если нужно вне карточки)
+        AnimatedVisibility(visible = errorMessage != null) {
+            errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .padding(horizontal = 40.dp)
+                )
+            }
         }
     }
 }
