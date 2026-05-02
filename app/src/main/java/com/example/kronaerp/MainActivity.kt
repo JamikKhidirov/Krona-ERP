@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.auth.screens.login.LogInScreen
+import com.example.auth.screens.register.RegisterScreen
 import com.example.kronaerp.ui.theme.KronaERPTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,9 +17,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KronaERPTheme {
-                LogInScreen(
-                    onNavigateToRegister = {},
-                    onLoginSuccess = {}
+                RegisterScreen(
+                    onNavigateToLogin = {},
+                    onRegisterSuccess = {}
                 )
             }
         }

@@ -1,5 +1,6 @@
 package com.example.auth.screens.repository
 
+import android.util.Log
 import com.example.network.UserProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -8,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.tasks.await
@@ -37,42 +39,50 @@ class AuthRepository @Inject constructor(
         orgCode: String
     ): Result<Unit> {
         return try {
-            // 1. Валидация роли
             if (role !in listOf("Клиент", "Менеджер")) {
                 return Result.failure(Exception("Неверная роль"))
             }
 
-            // 2. Проверка кода для Менеджера
             if (role == "Менеджер" && orgCode != MANAGER_ACCESS_CODE) {
                 return Result.failure(Exception("Неверный код доступа организации"))
             }
 
-            // 3. Формируем email для Firebase Auth
             val email = formatLoginToEmail(login)
+            Log.d("AuthRepository", "Регистрация: email=$email")
 
-            // 4. Создаём аккаунт в Firebase Auth
+            // Создаём пользователя в Auth
             val authResult = auth.createUserWithEmailAndPassword(email, pass).await()
             val uid = authResult.user?.uid
-                ?: return Result.failure(Exception("Ошибка получения ID пользователя"))
+                ?: return Result.failure(Exception("Ошибка получения ID"))
 
-            // 5. Создаём профиль в Firestore
+            Log.d("AuthRepository", "Auth успешен, UID=$uid")
+
+            // Создаём профиль в Firestore
             val profile = UserProfile(
                 uid = uid,
                 fio = fio,
-                login = login,          // Сохраняем оригинальный логин
-                email = email,            // Сохраняем полный email
+                login = login,
+                email = email,
                 role = role,
                 createdAt = System.currentTimeMillis()
             )
 
+            Log.d("AuthRepository", "Сохранение в Firestore...")
             db.collection("users").document(uid).set(profile).await()
+            Log.d("AuthRepository", "Firestore успешен!")
 
             Result.success(Unit)
+
         } catch (e: FirebaseAuthWeakPasswordException) {
             Result.failure(Exception("Пароль слишком простой. Минимум 6 символов"))
         } catch (e: FirebaseAuthUserCollisionException) {
             Result.failure(Exception("Пользователь с таким логином уже существует"))
+        } catch (e: FirebaseFirestoreException) {
+            // ← ← ← ДОБАВЬ ЭТОТ CATCH
+            Log.e("AuthRepository", "Firestore ошибка: ${e.code} - ${e.message}")
+            Result.failure(Exception("Ошибка сохранения данных: ${e.message}"))
         } catch (e: Exception) {
+            Log.e("AuthRepository", "Ошибка регистрации: ${e.javaClass.simpleName} - ${e.message}")
             Result.failure(Exception("Ошибка регистрации: ${e.localizedMessage}"))
         }
     }

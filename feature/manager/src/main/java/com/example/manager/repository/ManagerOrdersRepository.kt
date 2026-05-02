@@ -20,7 +20,6 @@ class ManagerOrdersRepository @Inject constructor(
 
 
     // Все заказы в реальном времени
-    // ManagerOrdersRepository.kt — обнови getAllOrders()
     fun getAllOrders(): Flow<List<Order>> = callbackFlow {
         try {
             val listener = ordersCollection
@@ -40,6 +39,7 @@ class ManagerOrdersRepository @Inject constructor(
                     trySend(orders)
                 }
 
+            //Закрываем поток
             awaitClose { listener.remove() }
         } catch (e: Exception) {
             android.util.Log.e("Firestore", "Критическая ошибка: ${e.message}")
