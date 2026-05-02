@@ -1,5 +1,6 @@
 package com.example.network.di
 
+import androidx.core.content.pm.ShortcutInfoCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
@@ -17,5 +18,9 @@ object ClientModule {
     @Singleton
     fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 
+
+    @Provides
+    @Singleton
+    fun procideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
 }
