@@ -24,7 +24,9 @@ fun KronaTextField(
     label: String,
     placeholder: String,
     leadingIcon: ImageVector,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    isError: Boolean? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: (@Composable () -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
         Text(
@@ -45,7 +47,10 @@ fun KronaTextField(
                 focusedBorderColor = Color(0xFF25326A),
                 unfocusedBorderColor = Color(0xFFE0E0E0)
             ),
-            singleLine = true
+            singleLine = true,
+            trailingIcon = {
+                trailingIcon?.invoke()
+            }
         )
     }
 }

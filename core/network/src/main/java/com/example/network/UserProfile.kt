@@ -7,6 +7,7 @@ data class UserProfile(
     val uid: String = "",
     val fio: String = "",
     val login: String = "",
+    val email: String = "",
     val role: String = "Client", // "Manager" или "Client"
-    val organizationCode: String = ""
+    val createdAt: Long = 0L
 )

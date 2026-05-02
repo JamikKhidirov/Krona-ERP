@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showBackground = true)
-fun ManualRoleDropdown(
+fun RoleDropdown(
     selectedRole: String = "",
     onRoleSelected: (String) -> Unit = {}
 ) {
