@@ -64,6 +64,14 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.57.1")
     kapt("com.google.dagger:hilt-compiler:2.57.1")
 
+    implementation("androidx.compose.material:material-icons-core:1.7.4")
+    implementation("androidx.compose.material:material-icons-extended:1.7.4")
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(project(":core:network"))
+
 
 
 
