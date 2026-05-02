@@ -20,23 +20,32 @@ class ManagerOrdersRepository @Inject constructor(
 
 
     // Все заказы в реальном времени
+    // ManagerOrdersRepository.kt — обнови getAllOrders()
     fun getAllOrders(): Flow<List<Order>> = callbackFlow {
-        val listener = ordersCollection
-            .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    close(error)
-                    return@addSnapshotListener
+        try {
+            val listener = ordersCollection
+                .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        // Не крашимся — отправляем пустой список + лог
+                        android.util.Log.e("Firestore", "Ошибка загрузки заказов: ${error.message}")
+                        trySend(emptyList())
+                        return@addSnapshotListener
+                    }
+
+                    val orders = snapshot?.documents?.map { doc ->
+                        doc.toObject(Order::class.java)?.copy(id = doc.id) ?: Order(id = doc.id)
+                    } ?: emptyList()
+
+                    trySend(orders)
                 }
 
-                val orders = snapshot?.documents?.map { doc ->
-                    doc.toObject(Order::class.java)?.copy(id = doc.id) ?: Order(id = doc.id)
-                } ?: emptyList()
-
-                trySend(orders)
-            }
-
-        awaitClose { listener.remove() }
+            awaitClose { listener.remove() }
+        } catch (e: Exception) {
+            android.util.Log.e("Firestore", "Критическая ошибка: ${e.message}")
+            trySend(emptyList())
+            close()
+        }
     }
 
     // Фильтр по статусу

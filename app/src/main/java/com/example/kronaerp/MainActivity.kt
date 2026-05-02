@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.kronaerp.ui.theme.KronaERPTheme
+import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,9 +17,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KronaERPTheme {
-                ManagerOrdersScreen{
+                ClientsScreen(
+                    onClientClick = {
 
-                }
+                    },
+                    onSettingsClick = {
+
+                    }
+                )
             }
         }
     }
