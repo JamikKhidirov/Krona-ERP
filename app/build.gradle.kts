@@ -90,6 +90,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:client"))
     implementation(project(":feature:manager"))
+    implementation(project(":feature:navigation"))
 
 
 }
