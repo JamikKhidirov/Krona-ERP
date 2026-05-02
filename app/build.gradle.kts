@@ -89,5 +89,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:client"))
+    implementation(project(":feature:manager"))
+
 
 }
