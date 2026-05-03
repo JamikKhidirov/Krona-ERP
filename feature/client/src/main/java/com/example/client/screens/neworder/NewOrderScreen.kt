@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 fun NewOrderScreen(
     viewModel: OrderViewModel = hiltViewModel(),
-    onNavigateToOrders: () -> Unit
+    onNavigateToOrders: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
