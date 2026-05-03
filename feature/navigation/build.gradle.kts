@@ -60,7 +60,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // build.gradle.kts (Module: app)
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
 
     // Остальные зависимости...
     implementation("androidx.compose.ui:ui:1.7.0")
