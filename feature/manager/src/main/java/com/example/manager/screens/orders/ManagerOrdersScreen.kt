@@ -17,8 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.manager.data.Order
 import com.example.manager.data.OrderFilter
+import com.example.manager.screens.clentscreen.uikit.bottombar.ManagerBottomNavigation
 import com.example.manager.screens.orders.uikit.EmptyOrdersState
 import com.example.manager.screens.orders.uikit.FilterChips
 import com.example.manager.screens.orders.uikit.ManagerOrderCard
@@ -29,6 +31,7 @@ import kotlin.collections.emptyList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerOrdersScreen(
+    navController: NavHostController,
     viewModel: ManagerOrdersViewModel = hiltViewModel(),
     onOrderClick: (String) -> Unit
 ) {
@@ -59,6 +62,9 @@ fun ManagerOrdersScreen(
                     titleContentColor = Color.White
                 )
             )
+        },
+        bottomBar = {
+            ManagerBottomNavigation(navController = navController)
         },
         containerColor = Color(0xFFF5F7FA)
     ) { padding ->

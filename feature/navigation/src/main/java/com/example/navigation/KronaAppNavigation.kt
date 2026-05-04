@@ -17,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.auth.screens.login.LogInScreen
 import com.example.navigation.graphs.auth.destinations.AuthDestinations
 import com.example.navigation.graphs.client.destinations.ClientDestinations
-import com.example.navigation.graphs.manager.destinations.ManagerDestinations
+import com.example.manager.screens.clentscreen.destinationscreen.ManagerDestinations
 
 
 @Composable

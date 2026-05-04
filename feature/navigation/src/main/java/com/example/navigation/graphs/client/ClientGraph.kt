@@ -11,7 +11,7 @@ import com.example.client.screens.myorders.MyOrdersScreen
 import com.example.client.screens.neworder.NewOrderScreen
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.navigation.graphs.client.destinations.ClientDestinations
-import com.example.navigation.graphs.manager.destinations.ManagerDestinations
+import com.example.manager.screens.clentscreen.destinationscreen.ManagerDestinations
 
 
 fun NavGraphBuilder.clientGraph(

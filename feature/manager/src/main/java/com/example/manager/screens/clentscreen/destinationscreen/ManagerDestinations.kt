@@ -1,7 +1,6 @@
-package com.example.navigation.graphs.manager.destinations
+package com.example.manager.screens.clentscreen.destinationscreen
 
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 sealed class ManagerDestinations() {

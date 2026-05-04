@@ -9,7 +9,7 @@ import androidx.navigation.toRoute
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
-import com.example.navigation.graphs.manager.destinations.ManagerDestinations
+import com.example.manager.screens.clentscreen.destinationscreen.ManagerDestinations
 
 
 
@@ -32,13 +32,15 @@ fun NavGraphBuilder.managerGraph(
                 },
                 onSettingsClick = {
                     //Открытие экрана настройки если он есть
-                }
+                },
+                navController
             )
         }
 
         composable<ManagerDestinations.OrdersScreenDestination>{
             //Экран всех заказов
             ManagerOrdersScreen(
+                navController = navController,
                 onOrderClick = { order ->
                     //Тут можно открыть экран детального просмотра заказа
 

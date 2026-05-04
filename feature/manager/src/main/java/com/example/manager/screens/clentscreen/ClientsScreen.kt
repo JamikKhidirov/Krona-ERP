@@ -28,11 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.manager.data.Client
 import com.example.manager.screens.clentscreen.uikit.ClientCard
 import com.example.manager.screens.clentscreen.uikit.EmptyClientsState
 import com.example.manager.screens.clentscreen.uikit.EmptySearchState
 import com.example.manager.screens.clentscreen.uikit.SearchBar
+import com.example.manager.screens.clentscreen.uikit.bottombar.ManagerBottomNavigation
 import com.example.manager.screens.clentscreen.viewmodel.ClientsViewModel
 
 
@@ -41,6 +43,7 @@ import com.example.manager.screens.clentscreen.viewmodel.ClientsViewModel
 fun ClientsScreen(
     onClientClick: (String) -> Unit,
     onSettingsClick: () -> Unit,
+    navController: NavHostController,
     viewModel: ClientsViewModel = hiltViewModel()
 ) {
     val clients by viewModel.clients.collectAsState()
@@ -75,6 +78,9 @@ fun ClientsScreen(
                     actionIconContentColor = Color.White
                 )
             )
+        },
+        bottomBar = {
+            ManagerBottomNavigation(navController = navController)
         },
         containerColor = Color(0xFFF5F7FA)
     ) { padding ->

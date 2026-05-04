@@ -6,6 +6,8 @@ plugins {
 
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+
+    kotlin("plugin.serialization") version "2.0.0"  // ← ← ← ДОЛЖЕН БЫТЬ
 }
 
 android {
@@ -73,6 +75,9 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation(project(":core:network"))
+
+    // Serialization ← ← ← ДОЛЖНА БЫТЬ
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
 
     implementation("com.google.dagger:hilt-android:2.57.1")
