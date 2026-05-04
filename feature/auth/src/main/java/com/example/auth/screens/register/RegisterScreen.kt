@@ -14,16 +14,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -57,16 +65,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
-    onRegisterSuccess: (String) -> Unit, // Передаём роль после успеха
+    onRegisterSuccess: (String) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    // Состояния полей
-    var name by remember { mutableStateOf("") }
-    var login by remember { mutableStateOf("") }
+    // === СОСТОЯНИЯ ПОЛЕЙ (как в Client) ===
+    var lastName by remember { mutableStateOf("") }      // Фамилия
+    var firstName by remember { mutableStateOf("") }     // Имя
+    var middleName by remember { mutableStateOf("") }    // Отчество
+    var phone by remember { mutableStateOf("") }         // Телефон
+    var email by remember { mutableStateOf("") }         // Email = логин
+    var address by remember { mutableStateOf("") }       // Адрес
+    var password by remember { mutableStateOf("") }      // Пароль
+    var confirmPassword by remember { mutableStateOf("") } // Подтверждение
+    var selectedRole by remember { mutableStateOf("Клиент") } // Роль
     var orgCode by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var selectedRole by remember { mutableStateOf("Выберите роль") }
 
     // Состояния UI
     var isLoading by remember { mutableStateOf(false) }
@@ -77,13 +89,28 @@ fun RegisterScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    // ФИО для отображения (как в Client.getFullName())
+    val fullName = remember(lastName, firstName, middleName) {
+        buildString {
+            append(lastName)
+            if (lastName.isNotEmpty() && firstName.isNotEmpty()) append(" ")
+            append(firstName)
+            if (middleName.isNotEmpty()) append(" $middleName")
+        }
+    }
+
     // Валидация формы
-    val isFormValid = remember(name, login, password, confirmPassword, selectedRole) {
-        name.isNotBlank() &&
-                login.isNotBlank() &&
+    val isFormValid = remember(
+        lastName, firstName, phone, email, password, confirmPassword, selectedRole
+    ) {
+        lastName.isNotBlank() &&
+                firstName.isNotBlank() &&
+                phone.isNotBlank() &&
+                email.isNotBlank() &&
+                email.contains("@") &&
                 password.length >= 6 &&
                 password == confirmPassword &&
-                selectedRole != "Выберите роль"
+                selectedRole in listOf("Клиент", "Менеджер")
     }
 
     Box(
@@ -97,7 +124,7 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
-                .padding(vertical = 60.dp),
+                .padding(vertical = 40.dp),
             shape = RoundedCornerShape(30.dp),
             color = Color.White,
             shadowElevation = 25.dp
@@ -106,7 +133,7 @@ fun RegisterScreen(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Заголовок
+                // === ЗАГОЛОВОК ===
                 Text(
                     text = "Крона",
                     fontSize = 32.sp,
@@ -124,37 +151,103 @@ fun RegisterScreen(
                     fontSize = 14.sp,
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
                 )
 
-                // Поля ввода
+                // === ФАМИЛИЯ ===
                 KronaTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = "ФИО",
-                    placeholder = "Иванов Иван",
+                    value = lastName,
+                    onValueChange = {
+                        lastName = it
+                        errorMessage = null
+                    },
+                    label = "Фамилия",
+                    placeholder = "Иванов",
                     leadingIcon = Icons.Default.Person
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
+                // === ИМЯ ===
                 KronaTextField(
-                    value = login,
-                    onValueChange = { login = it.filter { char -> !char.isWhitespace() } },
-                    label = "Логин",
-                    placeholder = "ivanov",
-                    leadingIcon = Icons.Default.AccountCircle
+                    value = firstName,
+                    onValueChange = {
+                        firstName = it
+                        errorMessage = null
+                    },
+                    label = "Имя",
+                    placeholder = "Иван",
+                    leadingIcon = Icons.Default.Person
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-                // Dropdown ролей (только 2 роли: Клиент и Менеджер)
+                // === ОТЧЕСТВО ===
+                KronaTextField(
+                    value = middleName,
+                    onValueChange = {
+                        middleName = it
+                        errorMessage = null
+                    },
+                    label = "Отчество (необязательно)",
+                    placeholder = "Иванович",
+                    leadingIcon = Icons.Default.Person,
+
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // === ТЕЛЕФОН ===
+                KronaTextField(
+                    value = phone,
+                    onValueChange = {
+                        phone = it.filter { c -> c.isDigit() || c == '+' || c == '-' || c == ' ' }
+                        errorMessage = null
+                    },
+                    label = "Телефон",
+                    placeholder = "+7 (900) 123-45-67",
+                    leadingIcon = Icons.Default.Phone,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // === EMAIL (логин) ===
+                KronaTextField(
+                    value = email,
+                    onValueChange = {
+                        email = it.filter { c -> !c.isWhitespace() }
+                        errorMessage = null
+                    },
+                    label = "Email (логин)",
+                    placeholder = "ivanov@mail.ru",
+                    leadingIcon = Icons.Default.Email,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // === АДРЕС ===
+                KronaTextField(
+                    value = address,
+                    onValueChange = {
+                        address = it
+                        errorMessage = null
+                    },
+                    label = "Адрес (необязательно)",
+                    placeholder = "г. Москва, ул. Ленина, д. 1",
+                    leadingIcon = Icons.Default.LocationOn
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // === РОЛЬ ===
                 RoleDropdown(
                     selectedRole = selectedRole,
                     onRoleSelected = { selectedRole = it }
                 )
 
-                // Код доступа только для Менеджера
+                // === КОД ДОСТУПА (только для Менеджера) ===
                 if (selectedRole == "Менеджер") {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -176,12 +269,15 @@ fun RegisterScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-                // Пароль
+                // === ПАРОЛЬ ===
                 KronaTextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
                     label = "Пароль",
                     placeholder = "Минимум 6 символов",
                     leadingIcon = Icons.Default.Lock,
@@ -202,12 +298,15 @@ fun RegisterScreen(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-                // Подтверждение пароля
+                // === ПОДТВЕРЖДЕНИЕ ПАРОЛЯ ===
                 KronaTextField(
                     value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
+                    onValueChange = {
+                        confirmPassword = it
+                        errorMessage = null
+                    },
                     label = "Подтверждение пароля",
                     placeholder = "Повторите пароль",
                     leadingIcon = Icons.Default.Refresh,
@@ -241,40 +340,71 @@ fun RegisterScreen(
                     )
                 }
 
-                // Сообщение об ошибке от сервера
+                // === ОШИБКА ОТ СЕРВЕРА ===
                 errorMessage?.let { error ->
-                    Text(
-                        text = error,
-                        color = Color.Red,
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp)
-                    )
+                            .padding(top = 12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFEBEE)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Error,
+                                contentDescription = null,
+                                tint = Color.Red,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = error,
+                                color = Color.Red,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Кнопка регистрации
+                // === КНОПКА РЕГИСТРАЦИИ ===
                 Button(
                     onClick = {
                         errorMessage = null
                         isLoading = true
 
                         scope.launch {
+                            // Собираем ФИО как в Client
+                            val fio = buildString {
+                                append(lastName)
+                                append(" ")
+                                append(firstName)
+                                if (middleName.isNotBlank()) {
+                                    append(" ")
+                                    append(middleName)
+                                }
+                            }
+
                             val result = viewModel.register(
-                                login = login.trim(),
+                                login = email.trim(),  // Email = логин
                                 pass = password,
-                                fio = name.trim(),
+                                fio = fio,
                                 role = selectedRole,
-                                orgCode = orgCode.trim()
+                                orgCode = if (selectedRole == "Менеджер") orgCode.trim() else ""
                             )
 
                             isLoading = false
 
                             result.onSuccess { role ->
-                                Toast.makeText(context, "Регистрация успешна!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Добро пожаловать, $firstName!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 onRegisterSuccess(role)
                             }.onFailure { error ->
                                 errorMessage = error.message
@@ -303,9 +433,9 @@ fun RegisterScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                // Переход к входу
+                // === ПЕРЕХОД К ВХОДУ ===
                 TextButton(
                     onClick = onNavigateToLogin,
                     modifier = Modifier.fillMaxWidth()

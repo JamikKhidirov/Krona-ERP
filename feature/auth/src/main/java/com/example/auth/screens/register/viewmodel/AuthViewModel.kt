@@ -56,7 +56,9 @@ class AuthViewModel @Inject constructor(
         pass: String,
         fio: String,
         role: String,
-        orgCode: String
+        orgCode: String,
+        phone: String = "",//Допольнительно
+        address: String = "" // Дополнительно
     ): Result<String> {
         _authState.value = AuthState.Loading
 

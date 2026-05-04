@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -26,6 +27,7 @@ fun KronaTextField(
     leadingIcon: ImageVector,
     isError: Boolean? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: (@Composable () -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
@@ -47,6 +49,7 @@ fun KronaTextField(
                 focusedBorderColor = Color(0xFF25326A),
                 unfocusedBorderColor = Color(0xFFE0E0E0)
             ),
+            keyboardOptions = keyboardOptions,
             singleLine = true,
             trailingIcon = {
                 trailingIcon?.invoke()
