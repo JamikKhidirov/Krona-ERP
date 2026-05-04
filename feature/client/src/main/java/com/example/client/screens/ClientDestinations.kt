@@ -1,7 +1,6 @@
-package com.example.navigation.graphs.client.destinations
+package com.example.client.screens
 
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 sealed class ClientDestinations {

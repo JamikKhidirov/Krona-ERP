@@ -1,8 +1,9 @@
-package com.example.manager.screens.clentscreen.uikit.bottombar
+package com.example.client.uicomponents.bottombar
 
-
-
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -10,33 +11,27 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.example.manager.screens.ManagerDestinations
+import com.example.client.screens.ClientDestinations
 
 
 @Composable
-@Preview(showBackground = true)
-fun ManagerBottomNavigation(
-    navController: NavHostController = rememberNavController()
+fun ClientBottomNavigation(
+    navController: NavHostController
 ) {
     val items = listOf(
-        ManagerBottomNavItem(
-            label = "Клиенты",
-            icon = Icons.Default.People,
-            route = ManagerDestinations.ClentsScreenDestination
+        ClientBottomNavItem(
+            label = "Мои заказы",
+            icon = Icons.Default.List, // или Icons.Default.ShoppingBag
+            route = ClientDestinations.MyOrdersScreenDestination
         ),
-        ManagerBottomNavItem(
-            label = "Заказы",
-            icon = Icons.Default.List,
-            route = ManagerDestinations.OrdersScreenDestination
+        ClientBottomNavItem(
+            label = "Новый заказ",
+            icon = Icons.Default.Add, // или Icons.Default.Create
+            route = ClientDestinations.NewOrderScreenDestinations
         )
     )
 
@@ -66,13 +61,10 @@ fun ManagerBottomNavigation(
                 selected = selected,
                 onClick = {
                     navController.navigate(item.route) {
-                        // Очищаем стек до стартового экрана
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }
-                        // Избегаем дублирования
                         launchSingleTop = true
-                        // Восстанавливаем состояние
                         restoreState = true
                     }
                 },
@@ -89,8 +81,8 @@ fun ManagerBottomNavigation(
 }
 
 
-data class ManagerBottomNavItem(
+data class ClientBottomNavItem(
     val label: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val icon: ImageVector,
     val route: Any
 )

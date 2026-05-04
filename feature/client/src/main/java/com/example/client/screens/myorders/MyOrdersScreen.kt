@@ -19,14 +19,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.client.screens.myorders.uicomponents.EmptyOrdersState
 import com.example.client.screens.myorders.uicomponents.OrderCard
 import com.example.client.screens.neworder.viewmodels.OrderViewModel
+import com.example.client.uicomponents.bottombar.ClientBottomNavigation
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun  MyOrdersScreen(
+    navController: NavHostController,
     viewModel: OrderViewModel = hiltViewModel(),
     onOrderClick: (String) -> Unit
 ) {
@@ -38,6 +41,9 @@ fun  MyOrdersScreen(
             TopAppBar(
                 title = { Text("Мои заказы") }
             )
+        },
+        bottomBar = {
+            ClientBottomNavigation(navController = navController)
         }
     ) { padding ->
         Box(

@@ -10,8 +10,8 @@ import androidx.navigation.toRoute
 import com.example.client.screens.myorders.MyOrdersScreen
 import com.example.client.screens.neworder.NewOrderScreen
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
-import com.example.navigation.graphs.client.destinations.ClientDestinations
-import com.example.manager.screens.clentscreen.destinationscreen.ManagerDestinations
+import com.example.client.screens.ClientDestinations
+import com.example.manager.screens.ManagerDestinations
 
 
 fun NavGraphBuilder.clientGraph(
@@ -23,6 +23,7 @@ fun NavGraphBuilder.clientGraph(
     ){
         composable<ClientDestinations.MyOrdersScreenDestination>{
             MyOrdersScreen(
+                navController = navController,
                 onOrderClick = {order ->
                     //Приходит товар надо навиировать на экран DetailOrder
                     navController.navigate(ManagerDestinations.OrderDetailScreenDestination(order))
@@ -44,7 +45,9 @@ fun NavGraphBuilder.clientGraph(
         }
 
         composable<ClientDestinations.NewOrderScreenDestinations>{
-            NewOrderScreen()
+            NewOrderScreen(
+                navController = navController
+            )
         }
     }
 

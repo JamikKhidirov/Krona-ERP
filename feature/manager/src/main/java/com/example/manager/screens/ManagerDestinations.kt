@@ -1,4 +1,4 @@
-package com.example.manager.screens.clentscreen.destinationscreen
+package com.example.manager.screens
 
 import kotlinx.serialization.Serializable
 

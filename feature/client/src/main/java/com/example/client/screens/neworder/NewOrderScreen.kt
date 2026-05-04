@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.client.uicomponents.HeaderSection
 import com.example.client.uicomponents.InputFieldsSection
 import com.example.client.data.ProductType
@@ -54,6 +55,7 @@ import com.example.client.uicomponents.PhotoUploadSection
 import com.example.client.uicomponents.PortfolioSection
 import com.example.client.uicomponents.ProductTypeGrid
 import com.example.client.uicomponents.SubmitButton
+import com.example.client.uicomponents.bottombar.ClientBottomNavigation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,6 +67,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun NewOrderScreen(
+    navController: NavHostController,
     viewModel: OrderViewModel = hiltViewModel(),
     onNavigateToOrders: () -> Unit = {}
 ) {
@@ -113,6 +116,7 @@ fun NewOrderScreen(
     Scaffold(
         bottomBar = {
             // Нижний бар
+            ClientBottomNavigation(navController = navController)
         },
         containerColor = Color(0xFFF5F7FA)
     ) { padding ->

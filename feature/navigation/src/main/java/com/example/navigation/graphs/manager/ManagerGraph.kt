@@ -9,7 +9,7 @@ import androidx.navigation.toRoute
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
-import com.example.manager.screens.clentscreen.destinationscreen.ManagerDestinations
+import com.example.manager.screens.ManagerDestinations
 
 
 
