@@ -1,7 +1,8 @@
 package com.example.client.data.order
 
-
-
+import android.os.Parcel
+import android.os.Parcelable
+import com.example.network.data.OrderStatus
 
 
 data class Order(
@@ -14,16 +15,10 @@ data class Order(
     val widthCm: String = "",
     val heightCm: String = "",
     val depthCm: String = "",
+    val comment: String = "",
     val imageUrls: List<String> = emptyList(),
     val status: OrderStatus = OrderStatus.PENDING,
     val createdAt: Long = System.currentTimeMillis()
 )
 
 
-
-enum class OrderStatus {
-    PENDING,       // Ожидает мастера
-    IN_PROGRESS,   // В работе
-    COMPLETED,     // Выполнен
-    CANCELLED      // Отменён
-}

@@ -36,11 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.client.data.order.Order
-import com.example.client.data.order.OrderStatus
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.platform.LocalLocale
+import com.example.network.data.OrderStatus
 
 
 // NewOrderScreen.kt

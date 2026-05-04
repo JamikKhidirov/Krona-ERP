@@ -10,7 +10,8 @@ import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
 import com.example.manager.screens.ManagerDestinations
-
+import com.example.manager.screens.userdetailscreen.UserDetailScreen
+import com.example.network.UserProfile
 
 
 fun NavGraphBuilder.managerGraph(
@@ -34,6 +35,29 @@ fun NavGraphBuilder.managerGraph(
                     //Открытие экрана настройки если он есть
                 },
                 navController
+            )
+        }
+
+        composable<ManagerDestinations.ClientDetailScreenDestination> {backStackEntry ->
+            val destination = backStackEntry.toRoute<ManagerDestinations.ClientDetailScreenDestination>()
+            UserDetailScreen(
+                navController = navController,
+                clientId = destination.clientId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onOrderClick = { orderId ->
+                    navController.navigate(
+                        ManagerDestinations.OrderDetailScreenDestination(orderId)
+                    )
+                },
+                onCallClick = { phone ->
+                    // Intent на звонок
+                },
+                onMessageClick = { phone ->
+                    // Intent на сообщение
+                }
+
             )
         }
 
