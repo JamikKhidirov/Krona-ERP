@@ -1,6 +1,7 @@
 package com.example.auth.screens.repository
 
 import android.util.Log
+import com.example.network.ClientRegistrationData
 import com.example.network.UserProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -32,11 +33,16 @@ class AuthRepository @Inject constructor(
      * @param orgCode — код доступа (только для Менеджера)
      */
     suspend fun registerUser(
-        login: String,
-        pass: String,
-        fio: String,
+        lastName: String,
+        firstName: String,
+        middleName: String,
+        phone: String,
+        email: String,
+        address: String,
         role: String,
-        orgCode: String
+        orgCode: String,
+        password: String,
+        confirmPassword: String,
     ): Result<Unit> {
         return try {
             if (role !in listOf("Клиент", "Менеджер")) {
@@ -47,22 +53,26 @@ class AuthRepository @Inject constructor(
                 return Result.failure(Exception("Неверный код доступа организации"))
             }
 
-            val email = formatLoginToEmail(login)
+            val email = formatLoginToEmail(email)
             Log.d("AuthRepository", "Регистрация: email=$email")
 
             // Создаём пользователя в Auth
-            val authResult = auth.createUserWithEmailAndPassword(email, pass).await()
+            val authResult = auth.createUserWithEmailAndPassword(email, password).await()
             val uid = authResult.user?.uid
                 ?: return Result.failure(Exception("Ошибка получения ID"))
 
             Log.d("AuthRepository", "Auth успешен, UID=$uid")
 
             // Создаём профиль в Firestore
-            val profile = UserProfile(
+            val profile = ClientRegistrationData(
                 uid = uid,
-                fio = fio,
-                login = login,
+                firstName = firstName,
+                lastName = lastName,
+                middleName = middleName,
+                phone = phone,
                 email = email,
+                address = address,
+                password = password,
                 role = role,
                 createdAt = System.currentTimeMillis()
             )

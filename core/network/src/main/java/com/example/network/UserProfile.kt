@@ -15,6 +15,7 @@ data class UserProfile(
 
 
 data class ClientRegistrationData(
+    val uid: String = "",           //Айди
     val lastName: String = "",      // Фамилия
     val firstName: String = "",     // Имя
     val middleName: String = "",    // Отчество
@@ -24,5 +25,5 @@ data class ClientRegistrationData(
     val password: String = "",      // Пароль
     val confirmPassword: String = "", // Подтверждение пароля
     val role: String = "Клиент",    // Роль
-    val orgCode: String = ""        // Код доступа (для менеджера)
+    val createdAt: Long = 0L
 )

@@ -390,11 +390,16 @@ fun RegisterScreen(
                             }
 
                             val result = viewModel.register(
-                                login = email.trim(),  // Email = логин
-                                pass = password,
-                                fio = fio,
+                                lastName = lastName.trim(),  // Email = логин
+                                firstName = firstName,
+                                middleName = middleName,
+                                phone = phone,
+                                email = email,
+                                address = address,
                                 role = selectedRole,
-                                orgCode = if (selectedRole == "Менеджер") orgCode.trim() else ""
+                                orgCode = if (selectedRole == "Менеджер") orgCode.trim() else "",
+                                password = password,
+                                confirmPassword = confirmPassword,
                             )
 
                             isLoading = false

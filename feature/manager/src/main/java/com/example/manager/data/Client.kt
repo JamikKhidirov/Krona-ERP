@@ -6,19 +6,21 @@ import kotlin.math.absoluteValue
 
 data class Client(
     @PropertyName("id") val id: String = "",
+    @PropertyName("uid") val uid: String = "",
     @PropertyName("firstName") val firstName: String = "",
     @PropertyName("lastName") val lastName: String = "",
     @PropertyName("middleName") val middleName: String = "",
     @PropertyName("phone") val phone: String = "",
     @PropertyName("email") val email: String = "",
+    @PropertyName("address") val address: String = "",
+    @PropertyName("role") val role: String = "Клиент",
     @PropertyName("avatarUrl") val avatarUrl: String = "",
     @PropertyName("orderCount") val orderCount: Int = 0,
     @PropertyName("activeOrderCount") val activeOrderCount: Int = 0,
-    @PropertyName("furnitureTypes") val furnitureTypes: List<String> = emptyList(), // ["Шкаф", "Кухня"]
+    @PropertyName("furnitureTypes") val furnitureTypes: List<String> = emptyList(),
     @PropertyName("totalSpent") val totalSpent: String = "0",
     @PropertyName("createdAt") val createdAt: Long = System.currentTimeMillis(),
     @PropertyName("lastOrderDate") val lastOrderDate: String = "",
-    @PropertyName("address") val address: String = "",
     @PropertyName("notes") val notes: String = ""
 ) {
     fun getFullName(): String = buildString {

@@ -1,5 +1,6 @@
 package com.example.auth.screens.register.viewmodel
 
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auth.screens.data.AuthState
@@ -52,17 +53,30 @@ class AuthViewModel @Inject constructor(
 
 
     suspend fun register(
-        login: String,
-        pass: String,
-        fio: String,
+        lastName: String,
+        firstName: String,
+        middleName: String,
+        phone: String,
+        email: String,
+        address: String,
         role: String,
         orgCode: String,
-        phone: String = "",//Допольнительно
-        address: String = "" // Дополнительно
+        password: String,
+        confirmPassword: String,
     ): Result<String> {
         _authState.value = AuthState.Loading
 
-        return authRepository.registerUser(login, pass, fio, role, orgCode).fold(
+        return authRepository.registerUser(
+            lastName,
+            firstName, middleName = middleName,
+            phone = phone,
+            email= email,
+            address = address,
+            orgCode = orgCode,
+            role = role,
+            password = password,
+            confirmPassword = confirmPassword
+            ).fold(
             onSuccess = {
                 _authState.value = AuthState.Authenticated(role)
                 Result.success(role)
