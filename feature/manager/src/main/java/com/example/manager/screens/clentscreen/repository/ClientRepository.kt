@@ -17,14 +17,14 @@ class ClientRepository @Inject constructor(
     private val firestore: FirebaseFirestore
 ) {
 
-    private val clientsCollection = firestore.collection("clients")
+    private val clientsCollection = firestore.collection("users")
     private val ordersCollection = firestore.collection("orders")
 
     // Все клиенты в реальном времени
     fun getAllClients(): Flow<List<Client>> = callbackFlow {
         try {
             val listener = clientsCollection
-                .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         android.util.Log.e("Firestore", "Ошибка загрузки клиентов: ${error.message}")
