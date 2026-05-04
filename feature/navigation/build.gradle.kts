@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
+
+    kotlin("plugin.serialization") version "2.0.0"// ← ← ← ДОБАВЬ ЭТО
 }
 
 android {
@@ -68,8 +72,14 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")  // Для Hilt
 
 
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    kapt("com.google.dagger:hilt-compiler:2.57.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")  // ← ДОБАВЬ
+
 
     implementation(project(":feature:auth"))
     implementation(project(":feature:client"))
     implementation(project(":feature:manager"))
+    implementation(project(":core:network"))
 }

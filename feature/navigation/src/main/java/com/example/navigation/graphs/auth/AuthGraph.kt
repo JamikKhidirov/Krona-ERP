@@ -10,7 +10,8 @@ import com.example.navigation.graphs.auth.destinations.AuthDestinations
 
 
 fun NavGraphBuilder.authGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    onAuthSuccess: (role: String) -> Unit
 ){
 
     navigation<AuthDestinations.AuthDestinationGraph>(
@@ -24,9 +25,12 @@ fun NavGraphBuilder.authGraph(
                    а если пользователь выбрал менеджера то на экраны менеджеров
 
                    */
+
+                   onAuthSuccess(role)
                },
                onNavigateToRegister = {
                    //Навигация на экран регистрации
+                   navController.navigate(AuthDestinations.RegisterScreenDestination)
                }
            )
        }
@@ -35,9 +39,12 @@ fun NavGraphBuilder.authGraph(
             RegisterScreen(
                 onRegisterSuccess = {role ->
                     //Тут приходит роль пользователя, можно что то сделать с ним
+                    onAuthSuccess(role)
                 },
                 onNavigateToLogin = {
                     //Навигация на экран Login чтобы пользователь вошел в систему
+
+                    navController.navigate(AuthDestinations.LogInScreenDestination)
                 }
             )
         }

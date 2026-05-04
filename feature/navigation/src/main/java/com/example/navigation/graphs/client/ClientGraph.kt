@@ -6,10 +6,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.example.client.screens.myorders.MyOrdersScreen
 import com.example.client.screens.neworder.NewOrderScreen
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.navigation.graphs.client.destinations.ClientDestinations
+import com.example.navigation.graphs.manager.destinations.ManagerDestinations
 
 
 fun NavGraphBuilder.clientGraph(
@@ -23,15 +25,20 @@ fun NavGraphBuilder.clientGraph(
             MyOrdersScreen(
                 onOrderClick = {order ->
                     //Приходит товар надо навиировать на экран DetailOrder
+                    navController.navigate(ManagerDestinations.OrderDetailScreenDestination(order))
+
                 }
             )
         }
 
-        composable<ClientDestinations.OrderDetailScreenDestinations> {
+        composable<ClientDestinations.OrderDetailScreenDestinations> { backStackEntry ->
+
+            val destination = backStackEntry.toRoute<ManagerDestinations.OrderDetailScreenDestination>()
             OrderDetailScreen(
-                orderId = "",
+                orderId = destination.orderId,
                 onNavigateBack = {
                     //Обратно навигируемся на экран Мои заказы
+                    navController.popBackStack()
                 }
             )
         }

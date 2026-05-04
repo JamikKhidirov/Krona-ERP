@@ -8,6 +8,6 @@ data class UserProfile(
     val fio: String = "",
     val login: String = "",
     val email: String = "",
-    val role: String = "Client", // "Manager" или "Client"
+    val role: String = "Менеджер", // "Manager" или "Client"
     val createdAt: Long = 0L
 )

@@ -26,7 +26,7 @@ import com.example.client.screens.neworder.viewmodels.OrderViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyOrdersScreen(
+fun  MyOrdersScreen(
     viewModel: OrderViewModel = hiltViewModel(),
     onOrderClick: (String) -> Unit
 ) {

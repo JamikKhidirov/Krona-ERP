@@ -25,5 +25,5 @@ sealed class ClientDestinations {
 
     //Экран детального просмотра заказа
     @Serializable
-    data object OrderDetailScreenDestinations: ClientDestinations()
+    data class OrderDetailScreenDestinations(val orderId: String): ClientDestinations()
 }
