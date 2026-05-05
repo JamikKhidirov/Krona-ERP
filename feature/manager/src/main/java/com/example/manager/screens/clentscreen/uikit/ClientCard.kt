@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.manager.data.Client
+
 import com.example.manager.screens.clentscreen.core.getOrderWord
 import com.example.manager.screens.clentscreen.uikit.SearchBar
-
+import com.example.uikit.Client
 
 
 @Composable

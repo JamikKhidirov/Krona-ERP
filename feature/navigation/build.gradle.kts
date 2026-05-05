@@ -82,4 +82,5 @@ dependencies {
     implementation(project(":feature:client"))
     implementation(project(":feature:manager"))
     implementation(project(":core:network"))
+    implementation(project(":core:uikit"))
 }

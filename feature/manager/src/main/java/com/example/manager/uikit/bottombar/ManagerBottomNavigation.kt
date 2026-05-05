@@ -1,4 +1,4 @@
-package com.example.manager.screens.clentscreen.uikit.bottombar
+package com.example.manager.uikit.bottombar
 
 
 
@@ -16,10 +16,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.manager.screens.ManagerDestinations
+import com.example.uikit.ClientDestinations
+import com.example.uikit.uikit.ClientBottomNavItem
 
 
 @Composable
@@ -37,6 +40,12 @@ fun ManagerBottomNavigation(
             label = "Заказы",
             icon = Icons.Default.List,
             route = ManagerDestinations.OrdersScreenDestination
+        ),
+
+        ManagerBottomNavItem(
+            label = "Профиль",
+            icon = Icons.Default.Person,
+            route = ClientDestinations.ProfileScreenDestination
         )
     )
 
@@ -91,6 +100,6 @@ fun ManagerBottomNavigation(
 
 data class ManagerBottomNavItem(
     val label: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val icon: ImageVector,
     val route: Any
 )

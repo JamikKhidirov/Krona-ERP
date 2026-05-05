@@ -1,9 +1,9 @@
-package com.example.client.uicomponents.bottombar
+package com.example.uikit.uikit
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.client.screens.ClientDestinations
+import com.example.uikit.ClientDestinations
 
 
 @Composable
@@ -32,6 +32,12 @@ fun ClientBottomNavigation(
             label = "Новый заказ",
             icon = Icons.Default.Add, // или Icons.Default.Create
             route = ClientDestinations.NewOrderScreenDestinations
+        ),
+
+        ClientBottomNavItem(
+            label = "Профиль",
+            icon = Icons.Default.Person,
+            route = ClientDestinations.ProfileScreenDestination
         )
     )
 

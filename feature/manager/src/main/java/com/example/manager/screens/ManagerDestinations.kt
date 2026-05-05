@@ -1,5 +1,6 @@
 package com.example.manager.screens
 
+import com.example.uikit.ClientDestinations
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,12 +18,16 @@ sealed class ManagerDestinations() {
 
 
     @Serializable
-    data class ClientDetailScreenDestination(val clientId: String)
+    data class ClientDetailScreenDestination(val clientId: String): ManagerDestinations()
 
 
     @Serializable
-    data class OrderDetailScreenDestination(val orderId: String)
+    data class OrderDetailScreenDestination(val orderId: String): ManagerDestinations()
 
+
+
+    @Serializable
+    object ProfileScreenDestination: ManagerDestinations()
 
 
     //Адрес экрана для списков заказов

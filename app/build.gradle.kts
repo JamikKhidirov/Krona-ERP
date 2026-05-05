@@ -91,6 +91,7 @@ dependencies {
     implementation(project(":feature:client"))
     implementation(project(":feature:manager"))
     implementation(project(":feature:navigation"))
+    implementation(project(":core:uikit"))
 
 
 }

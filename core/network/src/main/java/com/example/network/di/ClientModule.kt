@@ -21,6 +21,10 @@ object ClientModule {
 
     @Provides
     @Singleton
-    fun procideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+    fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+
+
+
+
 
 }

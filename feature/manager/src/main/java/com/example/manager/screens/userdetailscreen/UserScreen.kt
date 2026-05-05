@@ -32,13 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.manager.screens.userdetailscreen.uikit.AddressCard
+import com.example.uikit.screens.uikit.AddressCard
 import com.example.manager.screens.userdetailscreen.uikit.ClientOrderCard
 import com.example.manager.screens.userdetailscreen.uikit.ClientStatisticsCard
 import com.example.manager.screens.userdetailscreen.uikit.ContactInfoCard
 import com.example.manager.screens.userdetailscreen.uikit.EmptyOrdersPlaceholder
-import com.example.manager.screens.userdetailscreen.uikit.EmptyState
-import com.example.manager.screens.userdetailscreen.uikit.ErrorSnackbar
+import com.example.uikit.screens.uikit.EmptyState
 import com.example.manager.screens.userdetailscreen.uikit.NotesCard
 import com.example.manager.screens.userdetailscreen.uikit.ProfileHeader
 import com.example.manager.screens.userdetailscreen.uikit.RegistrationDateCard
@@ -58,7 +57,7 @@ fun UserDetailScreen(
     onMessageClick: (String) -> Unit = {},
     viewModel: UserDetailViewModel = hiltViewModel()
 ) {
-    val client by viewModel.client.collectAsState()
+    val client by viewModel.client.collectAsState ()
     val orders by viewModel.clientOrders.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()

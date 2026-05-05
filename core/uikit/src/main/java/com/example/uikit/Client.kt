@@ -1,8 +1,7 @@
-package com.example.manager.data
+package com.example.uikit
 
 import com.google.firebase.firestore.PropertyName
 import kotlin.math.absoluteValue
-
 
 data class Client(
     @PropertyName("id") val id: String = "",

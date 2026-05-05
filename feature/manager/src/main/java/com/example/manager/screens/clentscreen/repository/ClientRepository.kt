@@ -1,7 +1,8 @@
 package com.example.manager.screens.clentscreen.repository
 
-import com.example.manager.data.Client
+
 import com.example.manager.data.Order
+import com.example.uikit.Client
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose

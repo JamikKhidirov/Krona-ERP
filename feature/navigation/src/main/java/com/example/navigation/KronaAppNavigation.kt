@@ -16,8 +16,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.auth.screens.login.LogInScreen
 import com.example.navigation.graphs.auth.destinations.AuthDestinations
-import com.example.client.screens.ClientDestinations
 import com.example.manager.screens.ManagerDestinations
+import com.example.uikit.ClientDestinations
 
 
 @Composable

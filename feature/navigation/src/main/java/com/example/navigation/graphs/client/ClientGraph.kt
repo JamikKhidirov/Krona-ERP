@@ -10,8 +10,10 @@ import androidx.navigation.toRoute
 import com.example.client.screens.myorders.MyOrdersScreen
 import com.example.client.screens.neworder.NewOrderScreen
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
-import com.example.client.screens.ClientDestinations
 import com.example.manager.screens.ManagerDestinations
+import com.example.navigation.graphs.auth.destinations.AuthDestinations
+import com.example.uikit.ClientDestinations
+import com.example.uikit.screens.MyProfileScreen
 
 
 fun NavGraphBuilder.clientGraph(
@@ -42,6 +44,13 @@ fun NavGraphBuilder.clientGraph(
                     navController.popBackStack()
                 }
             )
+        }
+        composable<ClientDestinations.ProfileScreenDestination> {
+            MyProfileScreen(navController) {
+                navController.navigate(AuthDestinations.AuthDestinationGraph){
+
+                }
+            }
         }
 
         composable<ClientDestinations.NewOrderScreenDestinations>{

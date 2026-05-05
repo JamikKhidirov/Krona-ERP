@@ -2,8 +2,9 @@ package com.example.manager.screens.clentscreen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.manager.data.Client
+
 import com.example.manager.screens.clentscreen.repository.ClientRepository
+import com.example.uikit.Client
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

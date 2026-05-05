@@ -42,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.manager.data.Client
 import com.example.manager.screens.userdetailscreen.core.formatDateLong
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.client.screens
+package com.example.uikit
 
 import kotlinx.serialization.Serializable
 
@@ -20,6 +20,10 @@ sealed class ClientDestinations {
     //Экран создания нового заказа
     @Serializable
     data object NewOrderScreenDestinations: ClientDestinations()
+
+
+    @Serializable
+    object ProfileScreenDestination: ClientDestinations()
 
 
     //Экран детального просмотра заказа

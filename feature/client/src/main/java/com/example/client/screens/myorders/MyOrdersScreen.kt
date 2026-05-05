@@ -23,8 +23,7 @@ import androidx.navigation.NavHostController
 import com.example.client.screens.myorders.uicomponents.EmptyOrdersState
 import com.example.client.screens.myorders.uicomponents.OrderCard
 import com.example.client.screens.neworder.viewmodels.OrderViewModel
-import com.example.client.uicomponents.bottombar.ClientBottomNavigation
-
+import com.example.uikit.uikit.ClientBottomNavigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

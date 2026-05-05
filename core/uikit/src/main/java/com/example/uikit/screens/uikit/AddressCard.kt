@@ -1,4 +1,4 @@
-package com.example.manager.screens.userdetailscreen.uikit
+package com.example.uikit.screens.uikit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

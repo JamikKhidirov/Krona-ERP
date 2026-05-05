@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.auth.R
-import com.example.uikit.AuthText
+import com.example.uikit.uikit.AuthText
 
 
 @Composable

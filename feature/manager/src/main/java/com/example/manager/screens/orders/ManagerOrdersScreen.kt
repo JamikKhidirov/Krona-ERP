@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,12 +19,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.manager.data.Order
 import com.example.manager.data.OrderFilter
-import com.example.manager.screens.clentscreen.uikit.bottombar.ManagerBottomNavigation
+import com.example.manager.uikit.bottombar.ManagerBottomNavigation
 import com.example.manager.screens.orders.uikit.EmptyOrdersState
 import com.example.manager.screens.orders.uikit.FilterChips
 import com.example.manager.screens.orders.uikit.ManagerOrderCard
 import com.example.manager.screens.orders.viewmodel.ManagerOrdersViewModel
-import java.util.*
 import kotlin.collections.emptyList
 
 @OptIn(ExperimentalMaterial3Api::class)

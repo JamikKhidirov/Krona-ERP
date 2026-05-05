@@ -39,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -51,14 +50,9 @@ import com.example.client.screens.neworder.uicomponents.DimensionsSection
 import com.example.client.screens.neworder.uicomponents.PhotoUploadSection
 import com.example.client.screens.neworder.viewmodels.OrderViewModel
 import com.example.client.uicomponents.MasterInfoCard
-import com.example.client.uicomponents.PhotoUploadSection
 import com.example.client.uicomponents.PortfolioSection
 import com.example.client.uicomponents.ProductTypeGrid
-import com.example.client.uicomponents.SubmitButton
-import com.example.client.uicomponents.bottombar.ClientBottomNavigation
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.uikit.uikit.ClientBottomNavigation
 
 
 // NewOrderScreen.kt

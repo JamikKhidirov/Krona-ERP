@@ -2,9 +2,10 @@ package com.example.manager.screens.userdetailscreen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.manager.data.Client
+
 import com.example.manager.data.Order
 import com.example.manager.screens.clentscreen.repository.ClientRepository
+import com.example.uikit.Client
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlin.onSuccess
 
 
 @HiltViewModel

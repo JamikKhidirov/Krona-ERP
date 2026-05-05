@@ -32,7 +32,7 @@ import com.example.auth.uikit.AuthButton
 import com.example.auth.uikit.AuthButtonState
 import com.example.auth.uikit.AuthTextFild
 import com.example.auth.uikit.AuthTextFildState
-import com.example.uikit.AuthText
+import com.example.uikit.uikit.AuthText
 
 
 @Composable
