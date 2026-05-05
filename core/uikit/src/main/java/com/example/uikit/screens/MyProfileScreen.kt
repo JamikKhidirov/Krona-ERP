@@ -46,7 +46,8 @@ import com.example.uikit.uikit.ClientBottomNavigation
 fun MyProfileScreen(
     navController: NavHostController,
     viewModel: MyProfileViewModel = hiltViewModel(),
-    onNavigateToAuth: () -> Unit
+    onNavigateToAuth: () -> Unit,
+    bottomBar: @Composable (NavHostController) -> Unit
 ) {
     val client by viewModel.client.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -80,7 +81,7 @@ fun MyProfileScreen(
             )
         },
         bottomBar = {
-            ClientBottomNavigation(navController = navController)
+         bottomBar(navController)
         },
         containerColor = Color(0xFFF5F7FA)
     ) { padding ->

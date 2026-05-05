@@ -11,9 +11,11 @@ import com.example.client.screens.myorders.MyOrdersScreen
 import com.example.client.screens.neworder.NewOrderScreen
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.manager.screens.ManagerDestinations
+import com.example.manager.uikit.bottombar.ManagerBottomNavigation
 import com.example.navigation.graphs.auth.destinations.AuthDestinations
 import com.example.uikit.ClientDestinations
 import com.example.uikit.screens.MyProfileScreen
+import com.example.uikit.uikit.ClientBottomNavigation
 
 
 fun NavGraphBuilder.clientGraph(
@@ -46,12 +48,15 @@ fun NavGraphBuilder.clientGraph(
             )
         }
         composable<ClientDestinations.ProfileScreenDestination> {
-            MyProfileScreen(navController) {
-                navController.navigate(AuthDestinations.AuthDestinationGraph){
-
+            MyProfileScreen(
+                navController = navController,
+                onNavigateToAuth = {},
+                bottomBar = {navController
+                    ClientBottomNavigation(navController = navController)
                 }
-            }
+            )
         }
+
 
         composable<ClientDestinations.NewOrderScreenDestinations>{
             NewOrderScreen(

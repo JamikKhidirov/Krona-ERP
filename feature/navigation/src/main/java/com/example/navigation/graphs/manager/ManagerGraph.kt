@@ -11,6 +11,7 @@ import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
 import com.example.manager.screens.ManagerDestinations
 import com.example.manager.screens.userdetailscreen.UserDetailScreen
+import com.example.manager.uikit.bottombar.ManagerBottomNavigation
 import com.example.navigation.graphs.auth.destinations.AuthDestinations
 import com.example.network.UserProfile
 import com.example.uikit.screens.MyProfileScreen
@@ -77,10 +78,13 @@ fun NavGraphBuilder.managerGraph(
 
 
         composable<ManagerDestinations.ProfileScreenDestination> {
-            MyProfileScreen(navController) {
-                navController.navigate(AuthDestinations.AuthDestinationGraph){
-
+            MyProfileScreen(
+                navController = navController,
+                onNavigateToAuth = {},
+                bottomBar = {navController
+                    ManagerBottomNavigation(navController = navController)
                 }
+            )
             }
         }
 
@@ -95,4 +99,3 @@ fun NavGraphBuilder.managerGraph(
             )
         }
     }
-}

@@ -45,7 +45,7 @@ fun ManagerBottomNavigation(
         ManagerBottomNavItem(
             label = "Профиль",
             icon = Icons.Default.Person,
-            route = ClientDestinations.ProfileScreenDestination
+            route = ManagerDestinations.ProfileScreenDestination
         )
     )
 
