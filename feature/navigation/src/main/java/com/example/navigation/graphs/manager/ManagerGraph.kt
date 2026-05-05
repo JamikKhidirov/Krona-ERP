@@ -80,7 +80,11 @@ fun NavGraphBuilder.managerGraph(
         composable<ManagerDestinations.ProfileScreenDestination> {
             MyProfileScreen(
                 navController = navController,
-                onNavigateToAuth = {},
+                onNavigateToAuth = {
+                    navController.navigate(AuthDestinations.AuthDestinationGraph) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
                 bottomBar = {navController
                     ManagerBottomNavigation(navController = navController)
                 }
@@ -98,4 +102,4 @@ fun NavGraphBuilder.managerGraph(
                 }
             )
         }
-    }
+}
