@@ -1,5 +1,6 @@
 package com.example.uikit.screens
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,9 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.uikit.core.restartApp
 import com.example.uikit.screens.uikit.AddressCard
 import com.example.uikit.screens.uikit.DangerZone
 import com.example.uikit.screens.uikit.DeleteAccountDialog
@@ -38,6 +41,7 @@ import com.example.uikit.screens.uikit.MyProfileHeader
 import com.example.uikit.screens.uikit.MyStatisticsCard
 import com.example.uikit.screens.uikit.SettingsSection
 import com.example.uikit.screens.viewmodel.MyProfileViewModel
+import com.example.uikit.screens.viewmodel.NavigationEvent
 import com.example.uikit.uikit.ClientBottomNavigation
 
 
@@ -52,6 +56,8 @@ fun MyProfileScreen(
     val client by viewModel.client.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+
+    val context = LocalContext.current
 
     // Диалоги
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -69,6 +75,10 @@ fun MyProfileScreen(
             onNavigateToAuth()
         }
     }
+
+    // ✅ ИСПРАВЛЕНО: Обработка навигационных событий
+
+
 
     Scaffold(
         topBar = {
@@ -166,6 +176,7 @@ fun MyProfileScreen(
             onConfirm = {
                 showLogoutDialog = false
                 viewModel.logout()
+
             },
             onDismiss = { showLogoutDialog = false }
         )

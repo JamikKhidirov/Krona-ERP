@@ -3,6 +3,7 @@ package com.example.uikit.screens.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uikit.Client
+import com.example.uikit.core.restartApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -119,4 +120,11 @@ class MyProfileViewModel @Inject constructor(
     fun clearError() {
         _error.value = null
     }
+}
+
+
+// ✅ Sealed class для навигации
+sealed class NavigationEvent {
+    object NavigateToAuth : NavigationEvent()
+    object RestartApp : NavigationEvent()
 }
