@@ -7,6 +7,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -24,9 +27,13 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,6 +42,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -59,6 +67,7 @@ import com.example.uikit.uikit.ClientBottomNavigation
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewOrderScreen(
     navController: NavHostController,
@@ -72,9 +81,7 @@ fun NewOrderScreen(
     var widthCm by remember { mutableStateOf("") }
     var heightCm by remember { mutableStateOf("") }
     var depthCm by remember { mutableStateOf("") }
-    var comment by remember { mutableStateOf("") } // Комментарий к заказу
-
-    // Список выбранных фото
+    var comment by remember { mutableStateOf("") }
     var selectedImages by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
     val productTypes = remember {
@@ -89,10 +96,10 @@ fun NewOrderScreen(
     }
     var selectedTypeId by remember { mutableIntStateOf(1) }
 
-    val isLoading by viewModel.isLoading.collectAsState()
+    val isCreating by viewModel.isCreating.collectAsState()
     val error by viewModel.error.collectAsState()
+    val orderCreated by viewModel.orderCreated.collectAsState()
 
-    // Лончер для выбора фото из галереи (Photo Picker API) [^1^]
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 5)
     ) { uris ->
@@ -107,111 +114,142 @@ fun NewOrderScreen(
         }
     }
 
+    // Успешное создание — навигация
+    LaunchedEffect(orderCreated) {
+        if (orderCreated) {
+            Toast.makeText(context, "Заказ создан!", Toast.LENGTH_SHORT).show()
+            viewModel.resetOrderCreated()
+            onNavigateToOrders()
+        }
+    }
+
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Новый заказ") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, "Назад")
+                    }
+                }
+            )
+        },
         bottomBar = {
-            // Нижний бар
             ClientBottomNavigation(navController = navController)
         },
         containerColor = Color(0xFFF5F7FA)
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFF6366F1))
-                .padding(8.dp)
         ) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.White)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .background(Color(0xFF6366F1))
+                    .padding(8.dp)
             ) {
-                item { HeaderSection() }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.White)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    item { HeaderSection() }
 
-                item {
-                    ProductTypeGrid(
-                        items = productTypes,
-                        selectedId = selectedTypeId,
-                        onTypeSelected = { id -> selectedTypeId = id }
-                    )
-                }
+                    item {
+                        ProductTypeGrid(
+                            items = productTypes,
+                            selectedId = selectedTypeId,
+                            onTypeSelected = { selectedTypeId = it }
+                        )
+                    }
 
-                item {
-                    InputFieldsSection(
-                        price = budget,
-                        description = description,
-                        onValueChanePrice = { budget = it },
-                        onVAlueChangeDescription = { description = it }
-                    )
-                }
+                    item {
+                        InputFieldsSection(
+                            price = budget,
+                            description = description,
+                            onValueChanePrice = { budget = it },
+                            onVAlueChangeDescription = { description = it }
+                        )
+                    }
 
-                // Поля для размеров (ширина, высота, глубина в см)
-                item {
-                    DimensionsSection(
-                        width = widthCm,
-                        height = heightCm,
-                        depth = depthCm,
-                        onWidthChange = { widthCm = it },
-                        onHeightChange = { heightCm = it },
-                        onDepthChange = { depthCm = it }
-                    )
-                }
+                    item {
+                        DimensionsSection(
+                            width = widthCm,
+                            height = heightCm,
+                            depth = depthCm,
+                            onWidthChange = { widthCm = it },
+                            onHeightChange = { heightCm = it },
+                            onDepthChange = { depthCm = it }
+                        )
+                    }
 
-                // Комментарий к заказу
-                item {
-                    CommentSection(
-                        comment = comment,
-                        onCommentChange = { comment = it }
-                    )
-                }
+                    item {
+                        CommentSection(
+                            comment = comment,
+                            onCommentChange = { comment = it }
+                        )
+                    }
 
-                // Секция загрузки фото
-                item {
-                    PhotoUploadSection(
-                        selectedImages = selectedImages,
-                        onAddPhoto = {
-                            photoPickerLauncher.launch(
-                                PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                    item {
+                        PhotoUploadSection(
+                            selectedImages = selectedImages,
+                            onAddPhoto = {
+                                photoPickerLauncher.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    )
                                 )
-                            )
-                        },
-                        onRemovePhoto = { uri ->
-                            selectedImages = selectedImages - uri
-                        }
-                    )
-                }
+                            },
+                            onRemovePhoto = { uri ->
+                                selectedImages = selectedImages - uri
+                            }
+                        )
+                    }
 
-                item {
-                    SubmitButton(
-                        isLoading = isLoading,
-                        onClick = {
-                            val selectedType = productTypes.find { it.id == selectedTypeId }
-                            viewModel.createOrder(
-                                productTypeId = selectedTypeId,
-                                productTypeName = selectedType?.name ?: "",
-                                description = description,
-                                budget = budget,
-                                widthCm = widthCm,
-                                heightCm = heightCm,
-                                depthCm = depthCm,
-                                imageUris = selectedImages
-                            )
-                        }
-                    )
-                }
+                    item {
+                        SubmitButton(
+                            isLoading = isCreating,  // ← Используем isCreating!
+                            onClick = {
+                                val selectedType = productTypes.find { it.id == selectedTypeId }
+                                viewModel.createOrder(
+                                    productTypeId = selectedTypeId,
+                                    productTypeName = selectedType?.name ?: "",
+                                    description = description,
+                                    budget = budget,
+                                    widthCm = widthCm,
+                                    heightCm = heightCm,
+                                    depthCm = depthCm,
+                                    comment = comment,
+                                    imageUris = selectedImages
+                                )
+                            }
+                        )
+                    }
 
-                item { MasterInfoCard() }
-                item { PortfolioSection() }
+                    item { MasterInfoCard() }
+                    item { PortfolioSection() }
+                }
+            }
+
+            // Блокировка экрана при создании
+            if (isCreating) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
 }
-
-
 
 
 @Composable

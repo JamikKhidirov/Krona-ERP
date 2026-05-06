@@ -9,41 +9,40 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.client.data.order.Order
+import com.example.client.screens.myorders.core.getProductTypeIcon
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.compose.ui.platform.LocalLocale
-import com.example.network.data.OrderStatus
+import com.example.client.screens.myorders.core.getStatusInfo
 
 
 // NewOrderScreen.kt
+
 
 
 
@@ -52,25 +51,18 @@ fun OrderCard(
     order: Order,
     onClick: () -> Unit
 ) {
-    val statusColor = when (order.status) {
-        OrderStatus.PENDING -> Color(0xFFFFA726)
-        OrderStatus.IN_PROGRESS -> Color(0xFF42A5F5)
-        OrderStatus.COMPLETED -> Color(0xFF66BB6A)
-        OrderStatus.CANCELLED -> Color(0xFFEF5350)
-    }
-
-    val statusText = when (order.status) {
-        OrderStatus.PENDING -> "Ожидает мастера"
-        OrderStatus.IN_PROGRESS -> "В работе"
-        OrderStatus.COMPLETED -> "Выполнен"
-        OrderStatus.CANCELLED -> "Отменён"
+    val statusInfo = getStatusInfo(order.status)
+    val dateFormat = remember { SimpleDateFormat("dd.MM.yyyy", Locale("ru")) }
+    val formattedDate = remember(order.createdAt) {
+        dateFormat.format(Date(order.createdAt))
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -78,126 +70,122 @@ fun OrderCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Заголовок с типом изделия и статусом
+            // Верхняя строка: тип + статус
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = order.productTypeName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Surface(
-                    color = statusColor.copy(alpha = 0.15f),
-                    shape = RoundedCornerShape(8.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Иконка типа
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color(0xFF6366F1).copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = getProductTypeIcon(order.productTypeId),
+                            contentDescription = null,
+                            tint = Color(0xFF6366F1),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Column {
+                        Text(
+                            text = order.productTypeName,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1E293B)
+                        )
+                        Text(
+                            text = "№${order.id.takeLast(6)} · $formattedDate",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFF94A3B8)
+                        )
+                    }
+                }
+
+                // Статус
+                StatusChip(status = order.status)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Divider(color = Color(0xFFF1F5F9))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Описание
+            if (order.description.isNotBlank()) {
+                Text(
+                    text = order.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF64748B),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Нижняя строка: бюджет + размеры
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Бюджет
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.AttachMoney,
+                        contentDescription = null,
+                        tint = Color(0xFF6366F1),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = statusText,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        text = "${order.budget} ₽",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF6366F1)
+                    )
+                }
+
+                // Размеры
+                if (order.widthCm.isNotBlank() || order.heightCm.isNotBlank()) {
+                    Text(
+                        text = buildString {
+                            if (order.widthCm.isNotBlank()) append("${order.widthCm}×")
+                            if (order.heightCm.isNotBlank()) append("${order.heightCm}")
+                            if (order.depthCm.isNotBlank()) append("×${order.depthCm}")
+                            append(" см")
+                        },
                         style = MaterialTheme.typography.bodySmall,
-                        color = statusColor
+                        color = Color(0xFF94A3B8)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Описание
-            Text(
-                text = order.description.take(100) + if (order.description.length > 100) "..." else "",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray,
-                maxLines = 2
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Размеры
-            if (order.widthCm.isNotEmpty() || order.heightCm.isNotEmpty()) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    if (order.widthCm.isNotEmpty()) {
-                        Text(
-                            text = "Ш: ${order.widthCm} см",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                    }
-                    if (order.heightCm.isNotEmpty()) {
-                        Text(
-                            text = "В: ${order.heightCm} см",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                    }
-                    if (order.depthCm.isNotEmpty()) {
-                        Text(
-                            text = "Г: ${order.depthCm} см",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            // Бюджет и дата
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Бюджет: ${order.budget} ₽",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Text(
-                    text = SimpleDateFormat("dd.MM.yyyy", LocalLocale.current.platformLocale)
-                        .format(Date(order.createdAt)),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
-
-            // Превью фото (если есть)
+            // Фото-индикатор
             if (order.imageUrls.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(order.imageUrls.take(3)) { url ->
-                        AsyncImage(
-                            model = url,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    if (order.imageUrls.size > 3) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(Color.LightGray),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "+${order.imageUrls.size - 3}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                    }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.PhotoLibrary,
+                        contentDescription = null,
+                        tint = Color(0xFF94A3B8),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${order.imageUrls.size} фото",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF94A3B8)
+                    )
                 }
             }
         }
