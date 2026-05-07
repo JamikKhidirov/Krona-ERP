@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.KronaERP" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.KronaERP" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+
+    <style name="SplashScreenKrona" parent="Theme.SplashScreen">
+        
+        <item name="windowSplashScreenAnimatedIcon">@drawable/kronasplashicon</item>
+        <item name="windowNoTitle">true</item>
+        <item name="backgroundColor">@color/blue</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/blue</item>
+        <item name="windowSplashScreenBackground">@color/blue</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="postSplashScreenTheme">@style/Theme.KronaERP</item>
+
+    </style>
+
+
 </resources>

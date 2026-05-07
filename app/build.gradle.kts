@@ -83,6 +83,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
 
+    // build.gradle.kts (app)
+    implementation("androidx.core:core-splashscreen:1.2.0")
 
 
 
