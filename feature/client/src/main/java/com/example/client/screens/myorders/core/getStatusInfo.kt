@@ -22,7 +22,7 @@ fun getStatusInfo(name: String): StatusInfo {
             color = Color(0xFF10B981),
             backgroundColor = Color(0xFFD1FAE5)
         )
-        OrderStatus.DELIVERED.name -> StatusInfo(
+        OrderStatus.DELIVERING.name -> StatusInfo(
             label = "Доставлен",
             color = Color(0xFF8B5CF6),
             backgroundColor = Color(0xFFEDE9FE)

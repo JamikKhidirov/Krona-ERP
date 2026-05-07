@@ -3,10 +3,12 @@ package com.example.network.data
 
 
 enum class OrderStatus {
-    PENDING,       // Ожидает мастера
-    IN_PROGRESS,   // В работе
-    COMPLETED,     // Выполнен
-    DELIVERED,    // Доставлен ← добавь если нет
+    PENDING,      // Ожидает — новый заказ, не назначен
+    ASSIGNED,     // Назначен — есть менеджер ← НОВЫЙ
+    IN_PROGRESS,  // В работе
+    READY,        // Готов к доставке ← НОВЫЙ
+    DELIVERING,   // Доставляется ← НОВЫЙ
+    COMPLETED,    // Выполнен
     CANCELLED     // Отменён
 
 }

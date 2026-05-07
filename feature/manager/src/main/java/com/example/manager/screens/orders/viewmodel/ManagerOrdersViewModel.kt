@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.manager.data.Order
 import com.example.manager.data.OrderFilter
 import com.example.manager.repository.ManagerOrdersRepository
+import com.example.network.data.OrderStatus
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,10 +22,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ManagerOrdersViewModel @Inject constructor(
-    private val repository: ManagerOrdersRepository
+    private val repository: ManagerOrdersRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private val _selectedFilter = MutableStateFlow<OrderFilter>(OrderFilter.ALL)
@@ -35,97 +37,118 @@ class ManagerOrdersViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    // Все заказы — с полной защитой
-    private val allOrders = try {
-        repository.getAllOrders()
-            .onStart {
-                _isLoading.value = true
-                android.util.Log.d("OrdersVM", "Начало загрузки")
-            }
-            .onEach { list ->
-                _isLoading.value = false
-                android.util.Log.d("OrdersVM", "Загружено: ${list.size}")
-            }
-            .catch { e ->
-                _isLoading.value = false
-                _error.value = "Ошибка загрузки: ${e.message}"
-                android.util.Log.e("OrdersVM", "❌ Ошибка Flow: ${e.message}")
-                emit(emptyList())
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
-    } catch (e: Exception) {
-        android.util.Log.e("OrdersVM", "❌ Критическая ошибка: ${e.message}")
-        MutableStateFlow(emptyList())
-    }
+    private val _successMessage = MutableStateFlow<String?>(null)
+    val successMessage: StateFlow<String?> = _successMessage.asStateFlow()
 
-    // Фильтрованные заказы — на клиенте
-    val orders: StateFlow<List<Order>> = try {
-        combine(allOrders, _selectedFilter) { orders, filter ->
-            try {
-                when (filter) {
-                    OrderFilter.ALL -> orders
-                    OrderFilter.NEW -> orders.filter { it.status.equals("PENDING", true) }
-                    OrderFilter.IN_PROGRESS -> orders.filter { it.status.equals("IN_PROGRESS", true) }
-                    OrderFilter.COMPLETED -> orders.filter { it.status.equals("COMPLETED", true) }
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("OrdersVM", "❌ Ошибка фильтра: ${e.message}")
-                orders // При ошибке — показываем все
-            }
-        }.catch { e ->
-            android.util.Log.e("OrdersVM", "❌ Ошибка combine: ${e.message}")
-            emit(emptyList())
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-    } catch (e: Exception) {
-        android.util.Log.e("OrdersVM", "❌ Критическая ошибка combine: ${e.message}")
-        MutableStateFlow(emptyList())
-    }
+    val currentManagerId: String
+        get() = auth.currentUser?.uid ?: ""
 
-    fun setFilter(filter: OrderFilter) {
-        try {
-            _selectedFilter.value = filter
-            android.util.Log.d("OrdersVM", "Фильтр: $filter")
-        } catch (e: Exception) {
-            android.util.Log.e("OrdersVM", "❌ Ошибка смены фильтра: ${e.message}")
+    // ✅ ИСПРАВЛЕНО: Используем unsorted версию если нет индекса
+    val allOrders: StateFlow<List<Order>> = repository.getAllOrdersUnsorted()  // <-- БЕЗ ИНДЕКСА
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val unassignedOrders: StateFlow<List<Order>> = repository.getUnassignedOrdersSimple()  // <-- БЕЗ ИНДЕКСА
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val myOrders: StateFlow<List<Order>> = repository.getMyOrdersSimple(currentManagerId)  // <-- БЕЗ ИНДЕКСА
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // ✅ ИСПРАВЛЕНО: Фильтрация безопасная
+    val orders: StateFlow<List<Order>> = combine(
+        allOrders,
+        _selectedFilter
+    ) { orders, filter ->
+        when (filter) {
+            OrderFilter.ALL -> orders
+            OrderFilter.NEW -> orders.filter { it.status == "PENDING" }
+            OrderFilter.MY_ORDERS -> orders.filter { it.managerId == currentManagerId }
+            OrderFilter.IN_PROGRESS -> orders.filter {
+                it.status in listOf("ASSIGNED", "IN_PROGRESS")
+            }
+            OrderFilter.READY -> orders.filter { it.status == "READY" }
+            OrderFilter.COMPLETED -> orders.filter { it.status == "COMPLETED" }
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun updateStatus(orderId: String, status: String) {
+    // ==================== ДЕЙСТВИЯ ====================
+
+    fun assignOrder(orderId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
 
-            try {
-                repository.updateOrderStatus(orderId, status)
-                    .onSuccess {
-                        android.util.Log.d("OrdersVM", "✅ Статус обновлён")
-                    }
-                    .onFailure { error ->
-                        _error.value = error.message
-                        android.util.Log.e("OrdersVM", "❌ Ошибка: ${error.message}")
-                    }
-            } catch (e: Exception) {
-                _error.value = "Критическая ошибка: ${e.message}"
-                android.util.Log.e("OrdersVM", "❌ Крит: ${e.message}")
-            }
+            repository.assignOrder(orderId, currentManagerId, getManagerName())
+                .onSuccess {
+                    _successMessage.value = "Заказ взят в работу!"
+                }
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка назначения"
+                }
 
             _isLoading.value = false
         }
     }
 
+    fun updateStatus(orderId: String, newStatus: OrderStatus, comment: String = "") {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            repository.updateOrderStatus(orderId, newStatus, comment)
+                .onSuccess {
+                    _successMessage.value = "Статус обновлён: ${getStatusLabel(newStatus)}"
+                }
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка обновления статуса"
+                }
+
+            _isLoading.value = false
+        }
+    }
+
+    fun cancelOrder(orderId: String, reason: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            repository.updateOrderStatus(orderId, OrderStatus.CANCELLED, reason)
+                .onSuccess {
+                    _successMessage.value = "Заказ отменён"
+                }
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка отмены"
+                }
+            _isLoading.value = false
+        }
+    }
+
+    fun setFilter(filter: OrderFilter) {
+        _selectedFilter.value = filter
+    }
+
     fun clearError() {
         _error.value = null
+    }
+
+    fun clearSuccessMessage() {
+        _successMessage.value = null
+    }
+
+    private fun getManagerName(): String {
+        return auth.currentUser?.displayName ?: "Менеджер"
+    }
+
+    private fun getStatusLabel(status: OrderStatus): String {
+        return when (status) {
+            OrderStatus.PENDING -> "Ожидает"
+            OrderStatus.ASSIGNED -> "Назначен"
+            OrderStatus.IN_PROGRESS -> "В работе"
+            OrderStatus.READY -> "Готов"
+            OrderStatus.DELIVERING -> "Доставляется"
+            OrderStatus.COMPLETED -> "Выполнен"
+            OrderStatus.CANCELLED -> "Отменён"
+        }
     }
 }
 
 enum class OrderFilter {
-    ALL, NEW, IN_PROGRESS, COMPLETED
+    ALL, NEW, MY_ORDERS, IN_PROGRESS, READY, COMPLETED
 }

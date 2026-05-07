@@ -34,30 +34,50 @@ fun ManagerOrdersScreen(
     onOrderClick: (String) -> Unit
 ) {
     val orders by viewModel.orders.collectAsState()
+    val unassigned by viewModel.unassignedOrders.collectAsState()
+    val myOrders by viewModel.myOrders.collectAsState()
     val selectedFilter by viewModel.selectedFilter.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val success by viewModel.successMessage.collectAsState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Показ ошибок и успеха
+    LaunchedEffect(error) {
+        error?.let {
+            snackbarHostState.showSnackbar(it, duration = SnackbarDuration.Short)
+            viewModel.clearError()
+        }
+    }
+    LaunchedEffect(success) {
+        success?.let {
+            snackbarHostState.showSnackbar(it, duration = SnackbarDuration.Short)
+            viewModel.clearSuccessMessage()
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
                     Column {
                         Text(
-                            "Заказы",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
+                            text = "Заказы",
+                            style = MaterialTheme.typography.titleLarge
                         )
                         Text(
-                            "Управление производством",
+                            text = "Новых: ${unassigned.size} | Моих: ${myOrders.size}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF6366F1),
-                    titleContentColor = Color.White
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White
                 )
             )
         },
@@ -65,24 +85,30 @@ fun ManagerOrdersScreen(
             ManagerBottomNavigation(navController = navController)
         },
         containerColor = Color(0xFFF5F7FA)
-    ) { padding ->
+    ) { innerPadding ->
+        // ✅ ИСПРАВЛЕНО: innerPadding применяем один раз на корневом Column
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(innerPadding) // ← Только здесь!
         ) {
-            // Фильтры
+            // Фильтры — без дополнительного отступа сверху
             FilterChips(
                 selectedFilter = selectedFilter,
                 onFilterSelected = { viewModel.setFilter(it) }
             )
 
-            // Список заказов
-            Box(modifier = Modifier.fillMaxSize()) {
+            // Контент
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp) // ← Горизонтальные отступы только для списка
+            ) {
                 when {
                     isLoading && orders.isEmpty() -> {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Color(0xFF6366F1)
                         )
                     }
                     orders.isEmpty() -> {
@@ -91,7 +117,10 @@ fun ManagerOrdersScreen(
                     else -> {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
+                            contentPadding = PaddingValues(
+                                top = 12.dp,
+                                bottom = 16.dp
+                            ),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(
@@ -100,20 +129,17 @@ fun ManagerOrdersScreen(
                             ) { order ->
                                 ManagerOrderCard(
                                     order = order,
-                                    onClick = { onOrderClick(order.id) }
+                                    currentManagerId = viewModel.currentManagerId,
+                                    onClick = { onOrderClick(order.id) },
+                                    onAssign = { viewModel.assignOrder(order.id) },
+                                    onUpdateStatus = { status ->
+                                        viewModel.updateStatus(order.id, status)
+                                    }
                                 )
                             }
                         }
                     }
                 }
-            }
-        }
-
-        // Показ ошибки
-        error?.let {
-            LaunchedEffect(it) {
-                // Можно добавить Snackbar
-                viewModel.clearError()
             }
         }
     }
@@ -168,7 +194,10 @@ private fun ManagerOrdersScreenPreview() {
                 items(previewOrders) { order ->
                     ManagerOrderCard(
                         order = order,
-                        onClick = {}
+                        onClick = {},
+                        currentManagerId = TODO(),
+                        onAssign = TODO(),
+                        onUpdateStatus = TODO()
                     )
                 }
             }

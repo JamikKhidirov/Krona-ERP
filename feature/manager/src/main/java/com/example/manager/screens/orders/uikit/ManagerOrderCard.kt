@@ -3,6 +3,7 @@ package com.example.manager.screens.orders.uikit
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,18 +15,32 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddTask
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,18 +51,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.manager.data.Order
+import com.example.manager.data.OrderPriority
 import com.example.manager.screens.orders.core.getStatusConfig
+import com.example.manager.screens.orders.core.getStatusLabel
+import com.example.network.data.OrderStatus
 
 @Composable
 fun ManagerOrderCard(
     order: Order,
-    onClick: () -> Unit
+    currentManagerId: String,
+    onClick: () -> Unit,
+    onAssign: () -> Unit,
+    onUpdateStatus: (OrderStatus) -> Unit
 ) {
     val statusConfig = getStatusConfig(order.status)
+    val isMyOrder = order.managerId == currentManagerId
+    val isUnassigned = order.managerId.isBlank() && order.status == OrderStatus.PENDING.name
+
+    var showStatusMenu by remember { mutableStateOf(false) }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -58,7 +82,7 @@ fun ManagerOrderCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Верхняя строка: ID и статус
+            // Верхняя строка: ID, статус, приоритет
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -67,92 +91,152 @@ fun ManagerOrderCard(
                 Text(
                     text = "#${order.id.takeLast(4).uppercase()}",
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF94A3B8),
-                    fontWeight = FontWeight.Medium
+                    color = Color(0xFF94A3B8)
                 )
 
-                Surface(
-                    color = statusConfig.backgroundColor,
-                    shape = RoundedCornerShape(6.dp)
-                ) {
-                    Text(
-                        text = statusConfig.label,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = statusConfig.textColor,
-                        fontWeight = FontWeight.Medium
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Приоритет
+                    if (order.priority == OrderPriority.URGENT.name) {
+                        Surface(
+                            color = Color(0xFFFEE2E2),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                "СРОЧНО",
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color(0xFFEF4444)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
+                    // Статус
+                    StatusChip(status = order.status)
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Название заказа
+            // Название
             Text(
                 text = order.title.ifEmpty { order.productTypeName },
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                color = Color(0xFF1E293B)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Инфо о клиенте
-            if (order.clientName.isNotEmpty()) {
+            // Клиент
+            if (order.clientName.isNotBlank()) {
+                Spacer(modifier = Modifier.height(8.dp))
                 InfoRow(
                     icon = Icons.Default.Person,
-                    text = order.clientName
+                    text = "${order.clientName} · ${order.clientPhone}"
                 )
             }
 
-            // Материал
-            if (order.material.isNotEmpty()) {
-                InfoRow(
-                    icon = Icons.Default.Build,
-                    text = order.material
-                )
-            }
-
-            // Адрес
-            if (order.address.isNotEmpty()) {
-                InfoRow(
-                    icon = Icons.Default.LocationOn,
-                    text = order.address
-                )
+            // Бюджет и материал
+            Spacer(modifier = Modifier.height(8.dp))
+            Row {
+                InfoRow(icon = Icons.Default.AttachMoney, text = "${order.budget} ₽")
+                Spacer(modifier = Modifier.width(16.dp))
+                if (order.material.isNotBlank()) {
+                    InfoRow(icon = Icons.Default.Build, text = order.material)
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+            Divider(color = Color(0xFFF1F5F9))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Нижняя строка: цена и стрелка
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${order.budget} ₽",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF6366F1)
-                )
+            // === КНОПКИ ДЕЙСТВИЙ ===
+            when {
+                // Заказ свободен — кнопка "Взять в работу"
+                isUnassigned -> {
+                    Button(
+                        onClick = onAssign,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF6366F1)
+                        )
+                    ) {
+                        Icon(Icons.Default.AddTask, null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Взять в работу")
+                    }
+                }
 
-                // Миниатюра или иконка
-                if (order.imageUrls.isNotEmpty()) {
-                    AsyncImage(
-                        model = order.imageUrls.first(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.ChevronRight,
-                        contentDescription = "Подробнее",
-                        tint = Color(0xFFCBD5E1)
+                // Мой заказ — кнопки управления статусом
+                isMyOrder -> {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Кнопка смены статуса
+                        Box(modifier = Modifier.weight(1f)) {
+                            OutlinedButton(
+                                onClick = { showStatusMenu = true },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Изменить статус")
+                            }
+
+                            DropdownMenu(
+                                expanded = showStatusMenu,
+                                onDismissRequest = { showStatusMenu = false }
+                            ) {
+                                val availableStatuses = when (order.status) {
+                                    OrderStatus.ASSIGNED.name -> listOf(
+                                        OrderStatus.IN_PROGRESS,
+                                        OrderStatus.CANCELLED
+                                    )
+                                    OrderStatus.IN_PROGRESS.name -> listOf(
+                                        OrderStatus.READY,
+                                        OrderStatus.CANCELLED
+                                    )
+                                    OrderStatus.READY.name -> listOf(
+                                        OrderStatus.DELIVERING,
+                                        OrderStatus.COMPLETED
+                                    )
+                                    OrderStatus.DELIVERING.name -> listOf(
+                                        OrderStatus.COMPLETED
+                                    )
+                                    else -> emptyList()
+                                }
+
+                                availableStatuses.forEach { status ->
+                                    DropdownMenuItem(
+                                        text = { Text(getStatusLabel(status)) },
+                                        onClick = {
+                                            onUpdateStatus(status)
+                                            showStatusMenu = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        // Кнопка звонка клиенту
+                        if (order.clientPhone.isNotBlank()) {
+                            IconButton(
+                                onClick = { /* Intent на звонок */ }
+                            ) {
+                                Icon(
+                                    Icons.Default.Phone,
+                                    "Позвонить",
+                                    tint = Color(0xFF10B981)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Заказ другого менеджера
+                else -> {
+                    Text(
+                        "Менеджер: ${order.managerId.take(4)}...",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF94A3B8)
                     )
                 }
             }
