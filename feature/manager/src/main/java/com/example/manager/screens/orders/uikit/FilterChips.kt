@@ -54,15 +54,15 @@ fun FilterChips(
                     )
                 },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = Color(0xFF6366F1),
-                    selectedLabelColor = Color.White,
-                    containerColor = Color.White,
-                    labelColor = Color(0xFF64748B)
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 border = FilterChipDefaults.filterChipBorder(
                     enabled = true,
                     selected = selected,
-                    borderColor = if (selected) Color(0xFF6366F1) else Color(0xFFE2E8F0)
+                    borderColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
                 )
             )
         }

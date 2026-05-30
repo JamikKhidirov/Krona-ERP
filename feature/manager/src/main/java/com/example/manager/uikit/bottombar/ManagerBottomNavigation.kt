@@ -4,6 +4,7 @@ package com.example.manager.uikit.bottombar
 
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -14,9 +15,10 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,19 +35,19 @@ fun ManagerBottomNavigation(
 ) {
     val items = listOf(
         ManagerBottomNavItem(
-            label = "Дэшборд",
-            icon = Icons.Default.Dashboard,
-            route = ManagerDestinations.DashboardScreenDestination
-        ),
-        ManagerBottomNavItem(
             label = "Клиенты",
             icon = Icons.Default.People,
             route = ManagerDestinations.ClentsScreenDestination
         ),
         ManagerBottomNavItem(
             label = "Заказы",
-            icon = Icons.Default.List,
+            icon = Icons.AutoMirrored.Filled.List,
             route = ManagerDestinations.OrdersScreenDestination
+        ),
+        ManagerBottomNavItem(
+            label = "Статистика",
+            icon = Icons.Default.BarChart,
+            route = ManagerDestinations.StatisticsScreenDestination
         ),
 
         ManagerBottomNavItem(
@@ -59,8 +61,8 @@ fun ManagerBottomNavigation(
     val currentDestination = navBackStackEntry.value?.destination
 
     NavigationBar(
-        containerColor = Color.White,
-        contentColor = Color(0xFF6366F1)
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         items.forEach { item ->
             val selected = currentDestination?.hasRoute(item.route::class) == true
@@ -75,7 +77,7 @@ fun ManagerBottomNavigation(
                 label = {
                     Text(
                         text = item.label,
-                        color = if (selected) Color(0xFF6366F1) else Color(0xFF94A3B8)
+                        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
                 selected = selected,
@@ -92,11 +94,11 @@ fun ManagerBottomNavigation(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFF6366F1),
-                    selectedTextColor = Color(0xFF6366F1),
-                    unselectedIconColor = Color(0xFF94A3B8),
-                    unselectedTextColor = Color(0xFF94A3B8),
-                    indicatorColor = Color(0xFFEEF2FF)
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }

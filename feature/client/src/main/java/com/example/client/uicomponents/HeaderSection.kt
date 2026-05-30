@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,17 +37,17 @@ import com.example.client.data.ProductType
 fun HeaderSection() {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.List, contentDescription = null, tint = Color.DarkGray)
+            Icon(Icons.Default.List, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.width(8.dp))
             Text("Крона", fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(Modifier.weight(1f))
             Icon(Icons.Default.Menu, contentDescription = null)
         }
         Spacer(Modifier.height(24.dp))
-        Text("Новый заказ", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1E293B))
+        Text("Новый заказ", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
         Text(
             "Опишите вашу идею, и мы воплотим её в дереве с безупречной точностью.",
-            fontSize = 14.sp, color = Color.Gray
+            fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -61,7 +62,7 @@ fun ProductTypeGrid(
         "ТИП ИЗДЕЛИЯ",
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
-        color = Color.Gray
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
     Spacer(Modifier.height(8.dp))
 
@@ -97,8 +98,8 @@ fun ProductItem(
     Surface(
         modifier = modifier.height(80.dp),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, if (isSelected) Color(0xFF6366F1) else Color(0xFFE2E8F0)),
-        color = if (isSelected) Color(0xFFF5F3FF) else Color.White,
+                        border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+        color = if (isSelected) Color(0xFFF5F3FF) else MaterialTheme.colorScheme.surface,
         tonalElevation = if (isSelected) 2.dp else 0.dp
     ) {
         Column(
@@ -109,7 +110,7 @@ fun ProductItem(
             Icon(
                 imageVector = item.icon,
                 contentDescription = null,
-                tint = if (isSelected) Color(0xFF6366F1) else Color.Gray,
+                tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(Modifier.height(4.dp))
@@ -117,7 +118,7 @@ fun ProductItem(
                 text = item.name,
                 fontSize = 12.sp,
                 fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
-                color = if (isSelected) Color(0xFF6366F1) else Color.DarkGray
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
         }
     }

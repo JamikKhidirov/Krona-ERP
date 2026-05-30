@@ -21,7 +21,7 @@ fun EmptyState(message: String) {
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFF94A3B8)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

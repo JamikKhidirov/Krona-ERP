@@ -30,7 +30,7 @@ fun NotesCard(notes: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF3C7))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -41,7 +41,7 @@ fun NotesCard(notes: String) {
                 Icon(
                     imageVector = Icons.Default.Notes,
                     contentDescription = "Заметки",
-                    tint = Color(0xFFD97706),
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -49,7 +49,7 @@ fun NotesCard(notes: String) {
                     text = "Заметки",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF92400E)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -58,7 +58,7 @@ fun NotesCard(notes: String) {
             Text(
                 text = notes,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF78350F)
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

@@ -2,8 +2,6 @@ package com.example.client.repository
 
 import com.example.client.data.order.GetOrder
 import com.example.client.data.order.Order
-import com.example.network.data.OrderStatus
-
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
@@ -103,15 +101,6 @@ class OrderRepository @Inject constructor(
         } else {
             Result.failure(NoSuchElementException("Заказ не найден"))
         }
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-
-    suspend fun updateOrderStatus(orderId: String, status: OrderStatus): Result<Unit> = try {
-        ordersCollection.document(orderId)
-            .update("status", status.name, "updatedAt", System.currentTimeMillis())
-            .await()
-        Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
     }

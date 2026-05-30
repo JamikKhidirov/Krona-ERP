@@ -38,7 +38,7 @@ fun MasterCard(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -49,7 +49,7 @@ fun MasterCard(order: Order) {
                 text = "Мастер",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -72,12 +72,12 @@ fun MasterCard(order: Order) {
                         modifier = Modifier
                             .size(56.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF6366F1)),
+                            .background(MaterialTheme.colorScheme.primary),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = order.masterName.take(1).uppercase(),
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -91,7 +91,7 @@ fun MasterCard(order: Order) {
                         text = order.masterName,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Row(
@@ -102,7 +102,7 @@ fun MasterCard(order: Order) {
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
                             modifier = Modifier.size(16.dp),
-                            tint = Color(0xFFFFB800)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
@@ -116,7 +116,7 @@ fun MasterCard(order: Order) {
                         Text(
                             text = order.masterPhone,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }

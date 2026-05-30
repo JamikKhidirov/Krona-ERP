@@ -25,7 +25,7 @@ fun FinanceSection(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -36,7 +36,7 @@ fun FinanceSection(order: Order) {
                 text = "Финансы",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -52,19 +52,19 @@ fun FinanceSection(order: Order) {
                 label = "Оплачено",
                 value = "$paid ₽",
                 isTotal = false,
-                valueColor = Color(0xFF22C55E)
+                valueColor = MaterialTheme.colorScheme.tertiary
             )
 
             Divider(
                 modifier = Modifier.padding(vertical = 12.dp),
-                color = Color(0xFFE2E8F0)
+                color = MaterialTheme.colorScheme.outlineVariant
             )
 
             FinanceRow(
                 label = "Осталось",
                 value = "${order.getRemainingAmount()} ₽",
                 isTotal = true,
-                valueColor = Color(0xFF6366F1)
+                valueColor = MaterialTheme.colorScheme.primary
             )
         }
     }

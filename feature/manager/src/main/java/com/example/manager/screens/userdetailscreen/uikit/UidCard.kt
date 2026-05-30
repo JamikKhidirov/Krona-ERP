@@ -20,7 +20,7 @@ fun UidCard(uid: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F5F9))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -28,12 +28,12 @@ fun UidCard(uid: String) {
             Text(
                 text = "UID",
                 style = MaterialTheme.typography.labelSmall,
-                color = Color(0xFF94A3B8)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = uid,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF64748B),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = FontFamily.Monospace
             )
         }

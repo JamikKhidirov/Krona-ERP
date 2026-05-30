@@ -56,6 +56,7 @@ fun StatusChip(
 }
 
 // Конфигурация статусов
+@Composable
 private fun getStatusConfig(status: String): StatusConfig {
     return when (status.uppercase()) {
         "PENDING", "NEW", "ОЖИДАЕТ" -> StatusConfig(
@@ -102,15 +103,15 @@ private fun getStatusConfig(status: String): StatusConfig {
         )
         "ON_HOLD", "ПРИОСТАНОВЛЕН" -> StatusConfig(
             label = "Приостановлен",
-            textColor = Color(0xFF64748B),
-            backgroundColor = Color(0xFFF1F5F9),
-            dotColor = Color(0xFF94A3B8)
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+            dotColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
         else -> StatusConfig(
             label = status,
-            textColor = Color(0xFF64748B),
-            backgroundColor = Color(0xFFF1F5F9),
-            dotColor = Color(0xFF94A3B8)
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+            dotColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

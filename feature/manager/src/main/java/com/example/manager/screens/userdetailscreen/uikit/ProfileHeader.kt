@@ -60,7 +60,7 @@ fun ProfileHeader(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -85,7 +85,7 @@ fun ProfileHeader(
                         .clip(CircleShape)
                         .background(
                             brush = Brush.linearGradient(
-                                colors = listOf(Color(0xFF6366F1), Color(0xFF8B5CF6))
+                                colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
                             )
                         ),
                     contentAlignment = Alignment.Center
@@ -93,7 +93,7 @@ fun ProfileHeader(
                     Text(
                         text = "${client.firstName.firstOrNull() ?: ""}${client.lastName.firstOrNull() ?: ""}",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -106,16 +106,16 @@ fun ProfileHeader(
                 text = "${client.lastName} ${client.firstName} ${client.middleName}".trim(),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
 
             // Роль
             val roleColor = when (client.role) {
-                "Менеджер" -> Color(0xFF6366F1)
-                "Клиент" -> Color(0xFF10B981)
+                "Менеджер" -> MaterialTheme.colorScheme.primary
+                "Клиент" -> MaterialTheme.colorScheme.tertiary
                 "Мастер" -> Color(0xFFF59E0B)
-                else -> Color(0xFF94A3B8)
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -143,13 +143,13 @@ fun ProfileHeader(
                 ActionButton(
                     icon = Icons.Default.Phone,
                     label = "Позвонить",
-                    color = Color(0xFF10B981),
+                    color = MaterialTheme.colorScheme.tertiary,
                     onClick = { onCallClick(client.phone) }
                 )
                 ActionButton(
                     icon = Icons.Default.Email,
                     label = "Написать",
-                    color = Color(0xFF6366F1),
+                    color = MaterialTheme.colorScheme.primary,
                     onClick = { onMessageClick(client.phone) }
                 )
             }

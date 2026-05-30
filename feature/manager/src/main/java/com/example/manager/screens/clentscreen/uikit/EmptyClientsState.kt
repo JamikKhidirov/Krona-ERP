@@ -32,18 +32,18 @@ fun EmptyClientsState() {
             imageVector = Icons.Default.Person,
             contentDescription = null,
             modifier = Modifier.size(80.dp),
-            tint = Color(0xFFCBD5E1)
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Нет клиентов",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF94A3B8)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = "Клиенты появятся после регистрации",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFFCBD5E1),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
         )
     }

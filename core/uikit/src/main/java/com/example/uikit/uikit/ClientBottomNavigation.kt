@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -45,8 +46,8 @@ fun ClientBottomNavigation(
     val currentDestination = navBackStackEntry.value?.destination
 
     NavigationBar(
-        containerColor = Color.White,
-        contentColor = Color(0xFF6366F1)
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.primary
     ) {
         items.forEach { item ->
             val selected = currentDestination?.hasRoute(item.route::class) == true
@@ -61,7 +62,7 @@ fun ClientBottomNavigation(
                 label = {
                     Text(
                         text = item.label,
-                        color = if (selected) Color(0xFF6366F1) else Color(0xFF94A3B8)
+                        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
                 selected = selected,
@@ -75,11 +76,11 @@ fun ClientBottomNavigation(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFF6366F1),
-                    selectedTextColor = Color(0xFF6366F1),
-                    unselectedIconColor = Color(0xFF94A3B8),
-                    unselectedTextColor = Color(0xFF94A3B8),
-                    indicatorColor = Color(0xFFEEF2FF)
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }

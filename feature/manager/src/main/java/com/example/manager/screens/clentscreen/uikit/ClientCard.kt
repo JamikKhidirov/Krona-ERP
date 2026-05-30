@@ -48,7 +48,7 @@ fun ClientCard(
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -92,7 +92,7 @@ fun ClientCard(
                     text = client.getFullName(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B),
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -101,8 +101,8 @@ fun ClientCard(
                     Text(
                         text = client.phone,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF64748B),
-                        modifier = Modifier.padding(top = 2.dp)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 2.dp)
                     )
                 }
 
@@ -121,7 +121,7 @@ fun ClientCard(
                                 text = "${client.activeOrderCount} ${getOrderWord(client.activeOrderCount)}",
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFFD97706),
+                                color = MaterialTheme.colorScheme.tertiary,
                                 fontWeight = FontWeight.Medium
                             )
                         }
@@ -129,14 +129,14 @@ fun ClientCard(
 
                     client.furnitureTypes.take(2).forEach { type ->
                         Surface(
-                            color = Color(0xFFF1F5F9),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             shape = RoundedCornerShape(6.dp)
                         ) {
                             Text(
                                 text = type,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFF64748B)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }

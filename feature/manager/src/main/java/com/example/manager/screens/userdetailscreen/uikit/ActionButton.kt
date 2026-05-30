@@ -56,7 +56,7 @@ fun ActionButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = Color(0xFF64748B)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.sp
 
 
@@ -61,7 +62,7 @@ fun ButtonAuthNavLogIn(
 
             Text("Войти",
                 fontSize = 14.sp,
-                color = Color(0xFF25326A),
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
 

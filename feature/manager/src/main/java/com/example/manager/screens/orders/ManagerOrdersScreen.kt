@@ -75,16 +75,16 @@ fun ManagerOrdersScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF6366F1),
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.surface,
+                    actionIconContentColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
         bottomBar = {
             ManagerBottomNavigation(navController = navController)
         },
-        containerColor = Color(0xFFF5F7FA)
+        containerColor = MaterialTheme.colorScheme.surfaceVariant
     ) { innerPadding ->
         // ✅ ИСПРАВЛЕНО: innerPadding применяем один раз на корневом Column
         Column(
@@ -108,7 +108,7 @@ fun ManagerOrdersScreen(
                     isLoading && orders.isEmpty() -> {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
-                            color = Color(0xFF6366F1)
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     orders.isEmpty() -> {
@@ -181,7 +181,7 @@ private fun ManagerOrdersScreenPreview() {
             )
         )
 
-        Column(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F7FA))) {
+        Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant)) {
             FilterChips(
                 selectedFilter = OrderFilter.ALL,
                 onFilterSelected = {}

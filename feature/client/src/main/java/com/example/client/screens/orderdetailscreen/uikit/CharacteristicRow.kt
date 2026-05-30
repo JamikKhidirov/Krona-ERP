@@ -24,14 +24,14 @@ fun CharacteristicRow(label: String, value: String?) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF64748B)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         if (value != null) {
             Text(
                 text = value,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

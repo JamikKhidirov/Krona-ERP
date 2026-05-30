@@ -30,7 +30,7 @@ fun ContactInfoCard(client: Client) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -39,7 +39,7 @@ fun ContactInfoCard(client: Client) {
                 text = "Контакты",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -49,7 +49,7 @@ fun ContactInfoCard(client: Client) {
                 icon = Icons.Default.Phone,
                 label = "Телефон",
                 value = client.phone,
-                iconColor = Color(0xFF10B981)
+                iconColor = MaterialTheme.colorScheme.tertiary
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -60,7 +60,7 @@ fun ContactInfoCard(client: Client) {
                     icon = Icons.Default.Email,
                     label = "Email",
                     value = client.email,
-                    iconColor = Color(0xFF6366F1)
+                    iconColor = MaterialTheme.colorScheme.primary
                 )
             }
         }

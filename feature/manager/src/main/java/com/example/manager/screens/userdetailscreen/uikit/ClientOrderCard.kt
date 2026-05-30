@@ -42,9 +42,9 @@ fun ClientOrderCard(
   val statusColor = when (order.status) {
         OrderStatus.PENDING.name -> Color(0xFFF59E0B)
         OrderStatus.IN_PROGRESS.name -> Color(0xFF3B82F6)
-        OrderStatus.COMPLETED.name -> Color(0xFF10B981)
-        OrderStatus.CANCELLED.name -> Color(0xFFEF4444)
-        else -> Color(0xFF94A3B8)
+        OrderStatus.COMPLETED.name -> MaterialTheme.colorScheme.tertiary
+        OrderStatus.CANCELLED.name -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     val statusText = when (order.status) {
@@ -60,7 +60,7 @@ fun ClientOrderCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -73,13 +73,13 @@ fun ClientOrderCard(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFF6366F1).copy(alpha = 0.1f)),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Chair, // или подходящая иконка
                     contentDescription = null,
-                    tint = Color(0xFF6366F1),
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -93,17 +93,17 @@ fun ClientOrderCard(
                     text = order.productTypeName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "Бюджет: ${order.budget} ₽",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = formatDate(order.createdAt),
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color(0xFF94A3B8)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 

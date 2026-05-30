@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -23,13 +22,13 @@ fun LoadingState() {
         verticalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator(
-            color = Color(0xFF6366F1)
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Загрузка заказов...",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF94A3B8)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

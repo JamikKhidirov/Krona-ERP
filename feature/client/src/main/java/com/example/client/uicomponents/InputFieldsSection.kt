@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ fun InputFieldsSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Column {
-            Text("ОПИСАНИЕ ПОЖЕЛАНИЙ", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+            Text("ОПИСАНИЕ ПОЖЕЛАНИЙ", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             OutlinedTextField(
                 value = description,
                 onValueChange = onVAlueChangeDescription,
@@ -43,10 +44,14 @@ fun InputFieldsSection(
             )
         }
         Column {
-            Text("ОРИЕНТИРОВОЧНЫЙ БЮДЖЕТ (₽)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+            Text("ОРИЕНТИРОВОЧНЫЙ БЮДЖЕТ (₽)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
             OutlinedTextField(
                 value = price,
-                onValueChange = onValueChanePrice,
+                onValueChange = {
+                    if (it.isEmpty() || it.matches(Regex("^\\d*$"))) {
+                        onValueChanePrice(it)
+                    }
+                },
                 leadingIcon = { Icon(Icons.Default.AccountBox, null) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
@@ -60,7 +65,7 @@ fun InputFieldsSection(
 //Тут нужно сделать логику для отправки фотки
 @Composable
 fun PhotoUploadSection() {
-    Text("ФОТО ИЛИ ЭСКИЗ", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+    Text("ФОТО ИЛИ ЭСКИЗ", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
     // Пунктирная граница реализуется через кастомный Modifier.drawBehind
     Box(
         modifier = Modifier
@@ -71,9 +76,9 @@ fun PhotoUploadSection() {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(Icons.Default.Share, contentDescription = null, tint = Color(0xFF6366F1))
+            Icon(Icons.Default.Share, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Text("Нажмите для загрузки", fontWeight = FontWeight.Bold)
-            Text("PNG, JPG или PDF до 10 МБ", fontSize = 12.sp, color = Color.Gray)
+            Text("PNG, JPG или PDF до 10 МБ", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

@@ -47,7 +47,7 @@ fun ErrorState(message: String, onRetry: () -> Unit) {
             imageVector = Icons.Default.Error,
             contentDescription = null,
             modifier = Modifier.size(64.dp),
-            tint = Color(0xFFEF4444)
+            tint = MaterialTheme.colorScheme.error
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -55,7 +55,7 @@ fun ErrorState(message: String, onRetry: () -> Unit) {
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 

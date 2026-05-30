@@ -27,7 +27,7 @@ fun CommentSection(comment: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -38,7 +38,7 @@ fun CommentSection(comment: String) {
                 text = "Комментарий",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -46,7 +46,7 @@ fun CommentSection(comment: String) {
             Text(
                 text = comment,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF475569),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 22.sp
             )
         }

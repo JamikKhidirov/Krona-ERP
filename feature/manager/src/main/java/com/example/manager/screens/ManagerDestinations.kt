@@ -37,4 +37,8 @@ sealed class ManagerDestinations() {
     //Адрес экрана дэшборда
     @Serializable
     data object DashboardScreenDestination: ManagerDestinations()
+
+    //Адрес экрана статистики
+    @Serializable
+    data object StatisticsScreenDestination: ManagerDestinations()
 }

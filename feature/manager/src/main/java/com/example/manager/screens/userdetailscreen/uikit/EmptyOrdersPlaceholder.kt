@@ -43,14 +43,14 @@ fun EmptyOrdersPlaceholder() {
         Icon(
             imageVector = Icons.Default.ShoppingBag,
             contentDescription = null,
-            tint = Color(0xFFCBD5E1),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(64.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "У клиента пока нет заказов",
             style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFF94A3B8)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

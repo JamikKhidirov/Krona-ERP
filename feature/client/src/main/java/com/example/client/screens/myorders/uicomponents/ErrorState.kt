@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,27 +49,27 @@ fun ErrorState(
         Icon(
             imageVector = Icons.Default.ErrorOutline,
             contentDescription = null,
-            tint = Color(0xFFEF4444),
+            tint = MaterialTheme.colorScheme.error,
             modifier = Modifier.size(64.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Ошибка загрузки",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF1E293B)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF94A3B8),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = onRetry,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF6366F1)
+                containerColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Text("Повторить")

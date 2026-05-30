@@ -59,7 +59,7 @@ fun MyProfileHeader(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             // Фон
@@ -69,7 +69,7 @@ fun MyProfileHeader(
                     .height(120.dp)
                     .background(
                         brush = Brush.linearGradient(
-                            colors = listOf(Color(0xFF6366F1), Color(0xFF8B5CF6))
+                            colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
                         )
                     )
             )
@@ -91,7 +91,7 @@ fun MyProfileHeader(
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape)
-                                .border(4.dp, Color.White, CircleShape),
+                                .border(4.dp, MaterialTheme.colorScheme.surface, CircleShape),
                             contentScale = ContentScale.Crop
                         )
                     } else {
@@ -99,14 +99,14 @@ fun MyProfileHeader(
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFF6366F1))
-                                .border(4.dp, Color.White, CircleShape),
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(4.dp, MaterialTheme.colorScheme.surface, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "${client.firstName.firstOrNull() ?: ""}${client.lastName.firstOrNull() ?: ""}",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -115,7 +115,7 @@ fun MyProfileHeader(
                     // Кнопка редактировать аватар
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFF6366F1),
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(32.dp)
                             .offset(x = 4.dp, y = (-4).dp)
@@ -124,7 +124,7 @@ fun MyProfileHeader(
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Изменить фото",
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -138,7 +138,7 @@ fun MyProfileHeader(
                     text = "${client.lastName} ${client.firstName} ${client.middleName}".trim(),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 // Роль

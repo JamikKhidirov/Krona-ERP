@@ -60,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.auth.screens.register.uicomponents.RoleDropdown
 import com.example.auth.screens.register.viewmodel.AuthViewModel
 import com.example.auth.uikit.KronaTextField
+import androidx.compose.material3.MaterialTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -116,7 +117,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF5F5F7)),
+            .background(color = MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Surface(
@@ -126,7 +127,7 @@ fun RegisterScreen(
                 .padding(horizontal = 20.dp)
                 .padding(vertical = 40.dp),
             shape = RoundedCornerShape(30.dp),
-            color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
             shadowElevation = 25.dp
         ) {
             Column(
@@ -138,7 +139,7 @@ fun RegisterScreen(
                     text = "Крона",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF25326A)
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = "Регистрация",
@@ -332,7 +333,7 @@ fun RegisterScreen(
                 if (confirmPassword.isNotBlank() && password != confirmPassword) {
                     Text(
                         text = "Пароли не совпадают",
-                        color = Color.Red,
+                        color = MaterialTheme.colorScheme.error,
                         fontSize = 12.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -346,7 +347,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFEBEE)),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Row(
@@ -356,13 +357,13 @@ fun RegisterScreen(
                             Icon(
                                 imageVector = Icons.Default.Error,
                                 contentDescription = null,
-                                tint = Color.Red,
+                                tint = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = error,
-                                color = Color.Red,
+                                color = MaterialTheme.colorScheme.error,
                                 fontSize = 14.sp
                             )
                         }
@@ -420,12 +421,12 @@ fun RegisterScreen(
                         .fillMaxWidth()
                         .height(56.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF25326A)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     enabled = isFormValid && !isLoading
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
-                            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
                             modifier = Modifier.size(24.dp),
                             strokeWidth = 2.dp
                         )
@@ -447,7 +448,7 @@ fun RegisterScreen(
                 ) {
                     Text(
                         "Уже есть аккаунт? Войти",
-                        color = Color(0xFF25326A),
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 14.sp
                     )
                 }

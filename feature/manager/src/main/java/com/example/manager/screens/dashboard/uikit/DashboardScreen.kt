@@ -17,13 +17,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.manager.screens.dashboard.viewmodel.DashboardViewModel
+import com.example.manager.uikit.bottombar.ManagerBottomNavigation
 import java.text.NumberFormat
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
+    navController: NavHostController,
+    onNavigateToStatistics: () -> Unit = {},
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -37,6 +41,9 @@ fun DashboardScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
+        },
+        bottomBar = {
+            ManagerBottomNavigation(navController = navController)
         }
     ) { padding ->
         if (state.isLoading) {
@@ -101,7 +108,7 @@ fun DashboardScreen(
                             title = "Завершено",
                             value = "${state.completedOrders}",
                             icon = Icons.Default.CheckCircle,
-                            color = Color(0xFF10B981)
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -116,14 +123,14 @@ fun DashboardScreen(
                             title = "Отменено",
                             value = "${state.cancelledOrders}",
                             icon = Icons.Default.Cancel,
-                            color = Color(0xFFEF4444)
+                            color = MaterialTheme.colorScheme.error
                         )
                         StatCard(
                             modifier = Modifier.weight(1f),
                             title = "Просрочено",
                             value = "${state.overdueOrders}",
                             icon = Icons.Default.Warning,
-                            color = Color(0xFFDC2626)
+                            color = MaterialTheme.colorScheme.error
                         )
                     }
                 }
@@ -178,6 +185,26 @@ fun DashboardScreen(
                     DetailRow("Завершено", "${state.completedOrders}")
                     DetailRow("Отменено", "${state.cancelledOrders}")
                     DetailRow("Просрочено", "${state.overdueOrders}")
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = onNavigateToStatistics,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.BarChart,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Подробная статистика")
+                    }
                 }
             }
         }

@@ -18,7 +18,7 @@ class ThemeViewModel @Inject constructor(
     private val _isDarkMode = MutableStateFlow(prefs.getBoolean("dark_mode", false))
     val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
 
-    private val _useDynamicColor = MutableStateFlow(prefs.getBoolean("dynamic_color", true))
+    private val _useDynamicColor = MutableStateFlow(prefs.getBoolean("dynamic_color", false))
     val useDynamicColor: StateFlow<Boolean> = _useDynamicColor.asStateFlow()
 
     fun setDarkMode(enabled: Boolean) {

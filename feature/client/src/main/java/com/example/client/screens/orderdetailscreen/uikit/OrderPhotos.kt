@@ -28,7 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +43,7 @@ fun OrderPhotos(imageUrls: List<String>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -54,7 +54,7 @@ fun OrderPhotos(imageUrls: List<String>) {
                 text = "Фото изделия",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -70,7 +70,9 @@ fun OrderPhotos(imageUrls: List<String>) {
                     .fillMaxWidth()
                     .height(200.dp)
                     .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
             )
 
             // Миниатюры
@@ -86,7 +88,9 @@ fun OrderPhotos(imageUrls: List<String>) {
                             modifier = Modifier
                                 .size(80.dp)
                                 .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                            error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
                         )
                     }
                     if (imageUrls.size > 4) {
@@ -94,14 +98,14 @@ fun OrderPhotos(imageUrls: List<String>) {
                             modifier = Modifier
                                 .size(80.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(Color(0xFFE2E8F0)),
+                                .background(MaterialTheme.colorScheme.outlineVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "+${imageUrls.size - 4}",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF64748B)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }

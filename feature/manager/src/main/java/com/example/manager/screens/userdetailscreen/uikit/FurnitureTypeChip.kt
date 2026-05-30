@@ -17,14 +17,14 @@ import androidx.compose.ui.unit.dp
 fun FurnitureTypeChip(type: String) {
     Surface(
         shape = RoundedCornerShape(8.dp),
-        color = Color(0xFFEEF2FF),
-        border = BorderStroke(1.dp, Color(0xFF6366F1).copy(alpha = 0.2f))
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
     ) {
         Text(
             text = type,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
             style = MaterialTheme.typography.labelMedium,
-            color = Color(0xFF6366F1),
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Medium
         )
     }

@@ -33,14 +33,14 @@ fun DocumentItem(document: Document) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFF1F5F9))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.Description,
             contentDescription = null,
-            tint = Color(0xFF6366F1),
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
 
@@ -51,7 +51,7 @@ fun DocumentItem(document: Document) {
                 text = document.name,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E293B),
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -59,7 +59,7 @@ fun DocumentItem(document: Document) {
                 Text(
                     text = document.size,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF64748B)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -67,7 +67,7 @@ fun DocumentItem(document: Document) {
         Icon(
             imageVector = Icons.Default.Download,
             contentDescription = "Скачать",
-            tint = Color(0xFF6366F1),
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(20.dp)
         )
     }

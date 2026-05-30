@@ -76,20 +76,20 @@ fun SettingsItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color(0xFF6366F1),
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFF1E293B),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = Color(0xFF94A3B8)
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

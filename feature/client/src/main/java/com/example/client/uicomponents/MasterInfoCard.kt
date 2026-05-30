@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,17 +39,17 @@ fun MasterInfoCard() {
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Ваш мастер на связи", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Ваш мастер на связи", color = MaterialTheme.colorScheme.surface, fontWeight = FontWeight.Bold)
             Text(
                 "После отправки заявки наш технолог изучит параметры и свяжется с вами...",
-                color = Color.LightGray, fontSize = 12.sp
+                color = MaterialTheme.colorScheme.surfaceVariant, fontSize = 12.sp
             )
             Spacer(Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(40.dp).background(Color.Gray, CircleShape)) // Заглушка фото
+                Box(Modifier.size(40.dp).background(MaterialTheme.colorScheme.onSurfaceVariant, CircleShape)) // Заглушка фото
                 Spacer(Modifier.width(12.dp))
                 Column {
-                    Text("Алексей К.", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Алексей К.", color = MaterialTheme.colorScheme.surface, fontWeight = FontWeight.Bold)
                     Text("Главный технолог 'Крона'", color = Color.Green, fontSize = 10.sp)
                 }
             }

@@ -116,6 +116,10 @@ class OrderViewModel @Inject constructor(
                 ImageUtils.uriToBase64(context, uri)
             }
 
+            if (imageUris.isNotEmpty() && base64Images.size != imageUris.size) {
+                _error.value = "Некоторые фото не удалось обработать. Заказ будет создан без них."
+            }
+
             val order = Order(
                 userId = userId,
                 productTypeId = productTypeId,

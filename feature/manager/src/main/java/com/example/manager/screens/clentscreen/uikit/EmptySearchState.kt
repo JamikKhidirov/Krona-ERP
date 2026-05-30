@@ -35,12 +35,12 @@ fun EmptySearchState(query: String) {
         Text(
             text = "По запросу \"$query\"",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF94A3B8)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = "ничего не найдено",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFFCBD5E1)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

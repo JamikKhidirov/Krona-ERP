@@ -91,14 +91,14 @@ fun DeliveryAddressSection(
             text = "МЕСТО ПОЛУЧЕНИЯ",
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 4.dp, bottom = 12.dp)
         )
 
         Text(
             text = "Выберите цех фабрики «Корона», где удобно забрать заказ:",
             style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFF94A3B8),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 4.dp, bottom = 12.dp)
         )
 
@@ -114,9 +114,9 @@ fun DeliveryAddressSection(
                         .clickable { onAddressSelected(factory) },
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) Color(0xFFEEF2FF) else Color.White
+                        containerColor = if (isSelected) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface
                     ),
-                    border = if (isSelected) BorderStroke(2.dp, Color(0xFF6366F1)) else BorderStroke(1.dp, Color(0xFFE2E8F0))
+                    border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(
@@ -125,7 +125,7 @@ fun DeliveryAddressSection(
                             Icon(
                                 imageVector = if (isSelected) Icons.Default.CheckCircle else Icons.Default.LocationOn,
                                 contentDescription = null,
-                                tint = if (isSelected) Color(0xFF6366F1) else Color(0xFFF59E0B),
+                                tint = if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFFF59E0B),
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -133,7 +133,7 @@ fun DeliveryAddressSection(
                                 text = factory.city,
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
@@ -143,7 +143,7 @@ fun DeliveryAddressSection(
                             text = factory.name,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1E293B)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -151,7 +151,7 @@ fun DeliveryAddressSection(
                         Text(
                             text = factory.address,
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -159,7 +159,7 @@ fun DeliveryAddressSection(
                         Text(
                             text = factory.phone,
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF6366F1)
+                            color = MaterialTheme.colorScheme.primary
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -167,7 +167,7 @@ fun DeliveryAddressSection(
                         Text(
                             text = factory.workHours,
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF94A3B8)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -185,19 +185,19 @@ fun DeliveryAddressSection(
                     modifier = Modifier.padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.CheckCircle, null, tint = Color(0xFF10B981), modifier = Modifier.size(20.dp))
+                    Icon(Icons.Default.CheckCircle, null,                     tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Text(
                             text = "Заказ будет готов в: ${selectedAddress.name}",
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF166534)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "${selectedAddress.city}, ${selectedAddress.address}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF166534).copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                     }
                 }

@@ -18,12 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -34,7 +35,10 @@ import com.example.client.screens.myorders.uicomponents.LoadingState
 import com.example.client.screens.myorders.uicomponents.OrderCard
 import com.example.client.screens.myorders.uicomponents.OrdersStatistics
 import com.example.client.screens.neworder.viewmodels.OrderViewModel
+import com.example.client.util.ClientNotificationHelper
 import com.example.uikit.uikit.ClientBottomNavigation
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyOrdersScreen(
@@ -60,6 +64,29 @@ fun MyOrdersScreen(
         }
     }
 
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            return@DisposableEffect onDispose {}
+        }
+        ClientNotificationHelper.createChannel(context)
+        val listener = FirebaseFirestore.getInstance()
+            .collection("notifications")
+            .whereEqualTo("userId", userId)
+            .addSnapshotListener { snapshot, _ ->
+                snapshot?.documentChanges?.forEach { change ->
+                    if (change.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
+                        val title = change.document.getString("title") ?: return@forEach
+                        val body = change.document.getString("body") ?: ""
+                        val notifId = change.document.getLong("createdAt")?.toInt() ?: System.currentTimeMillis().toInt()
+                        ClientNotificationHelper.showNotification(context, title, body, notifId)
+                    }
+                }
+            }
+        onDispose { listener.remove() }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -70,20 +97,20 @@ fun MyOrdersScreen(
                         Text(
                             text = "${orders.size} ${getOrdersCountText(orders.size)}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF6366F1),
-                    titleContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
         bottomBar = {
             ClientBottomNavigation(navController = navController)
         },
-        containerColor = Color(0xFFF5F7FA)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Box(
             modifier = Modifier

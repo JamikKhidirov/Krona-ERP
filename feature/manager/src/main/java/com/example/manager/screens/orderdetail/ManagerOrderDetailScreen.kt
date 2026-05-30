@@ -61,6 +61,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -124,18 +125,18 @@ fun ManagerOrderDetailScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.surface
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF6366F1),
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.surface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
-        containerColor = Color(0xFFF5F7FA)
+        containerColor = MaterialTheme.colorScheme.surfaceVariant
     ) { padding ->
         Box(
             modifier = Modifier
@@ -146,7 +147,7 @@ fun ManagerOrderDetailScreen(
                 isLoading && order == null -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = Color(0xFF6366F1)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
                 error != null && order == null -> {
@@ -155,9 +156,9 @@ fun ManagerOrderDetailScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.Info, null, tint = Color(0xFF94A3B8), modifier = Modifier.size(48.dp))
+                            Icon(Icons.Default.Info, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(48.dp))
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text(error ?: "Ошибка загрузки", color = Color(0xFF64748B))
+                            Text(error ?: "Ошибка загрузки", color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -263,7 +264,7 @@ private fun OrderDetailHeader(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Row(
@@ -274,19 +275,19 @@ private fun OrderDetailHeader(order: Order) {
                 Text(
                     text = "#${order.id.takeLast(6).uppercase()}",
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF94A3B8)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (order.priority == OrderPriority.URGENT.name) {
                         Surface(
-                            color = Color(0xFFFEE2E2),
+                            color = MaterialTheme.colorScheme.errorContainer,
                             shape = RoundedCornerShape(4.dp)
                         ) {
                             Text(
                                 "СРОЧНО",
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFFEF4444)
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
@@ -301,7 +302,7 @@ private fun OrderDetailHeader(order: Order) {
                 text = order.title.ifEmpty { order.productTypeName },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             if (order.productTypeName.isNotBlank()) {
@@ -309,31 +310,31 @@ private fun OrderDetailHeader(order: Order) {
                 Text(
                     text = order.productTypeName,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             if (order.createdAt > 0) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.CalendarToday, null, modifier = Modifier.size(14.dp), tint = Color(0xFF94A3B8))
+                    Icon(Icons.Default.CalendarToday, null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Создан: ${formatTimestamp(order.createdAt)}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF94A3B8)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
             if (order.deadline.isNotBlank()) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
-                    Icon(Icons.Default.AccessTime, null, modifier = Modifier.size(14.dp), tint = Color(0xFF6366F1))
+                    Icon(Icons.Default.AccessTime, null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.primary)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Дедлайн: ${order.deadline}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF6366F1),
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -347,14 +348,14 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Фото товара",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -365,7 +366,9 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
                     .build(),
                 contentDescription = "Фото товара",
                 modifier = Modifier.fillMaxWidth().height(220.dp).clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
             )
 
             if (imageUrls.size > 1) {
@@ -376,20 +379,22 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
                             model = url,
                             contentDescription = null,
                             modifier = Modifier.size(80.dp).clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                            error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
                         )
                     }
                     if (imageUrls.size > 5) {
                         item {
                             Box(
                                 modifier = Modifier.size(80.dp).clip(RoundedCornerShape(8.dp))
-                                    .background(Color(0xFFE2E8F0)),
+                                    .background(MaterialTheme.colorScheme.outlineVariant),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     "+${imageUrls.size - 5}",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF64748B)
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -405,14 +410,14 @@ private fun OrderHistoryTimeline(history: List<OrderHistoryItem>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "История заказа",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -420,7 +425,7 @@ private fun OrderHistoryTimeline(history: List<OrderHistoryItem>) {
                 Text(
                     text = "История пока пуста",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF94A3B8)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
                 history.forEachIndexed { index, item ->
@@ -452,13 +457,13 @@ private fun TimelineHistoryItem(
             modifier = Modifier.width(24.dp)
         ) {
             if (!isFirst) {
-                Box(modifier = Modifier.width(2.dp).height(20.dp).background(Color(0xFFE2E8F0)))
+                Box(modifier = Modifier.width(2.dp).height(20.dp).background(MaterialTheme.colorScheme.outlineVariant))
             } else {
                 Spacer(modifier = Modifier.height(20.dp))
             }
             Box(modifier = Modifier.size(12.dp).background(config.backgroundColor, CircleShape))
             if (!isLast) {
-                Box(modifier = Modifier.width(2.dp).height(40.dp).background(Color(0xFFE2E8F0)))
+                Box(modifier = Modifier.width(2.dp).height(40.dp).background(MaterialTheme.colorScheme.outlineVariant))
             }
         }
 
@@ -469,13 +474,13 @@ private fun TimelineHistoryItem(
                 text = config.label,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             if (item.timestamp > 0) {
                 Text(
                     text = formatTimestamp(item.timestamp),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
@@ -483,7 +488,7 @@ private fun TimelineHistoryItem(
                 Text(
                     text = item.managerName,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF94A3B8),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
@@ -491,7 +496,7 @@ private fun TimelineHistoryItem(
                 Text(
                     text = item.comment,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -504,14 +509,14 @@ private fun CharacteristicsSection(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Характеристики",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -545,14 +550,14 @@ private fun FinanceSection(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Финансы",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -578,14 +583,14 @@ private fun ClientInfoSection(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Клиент",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -605,14 +610,14 @@ private fun AddressSection(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Адрес доставки",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             DetailRow(Icons.Default.LocationOn, "Адрес", order.getFullAddress())
@@ -639,20 +644,20 @@ private fun CommentSection(comment: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEFCE8))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Комментарий клиента",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF92400E)
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = comment,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF78350F)
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -663,20 +668,20 @@ private fun ManagerCommentSection(comment: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = "Комментарий менеджера",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E40AF)
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = comment,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF1E3A5F)
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -700,7 +705,7 @@ private fun OrderActionButtons(
                     onClick = onAssign,
                     enabled = !isLoading,
                     modifier = Modifier.fillMaxWidth().height(52.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6366F1)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(14.dp)
                 ) {
                     Icon(Icons.Default.AddTask, null, modifier = Modifier.size(20.dp))
@@ -754,7 +759,7 @@ private fun OrderActionButtons(
                             onClick = { /* Intent на звонок */ },
                             modifier = Modifier.size(52.dp)
                         ) {
-                            Icon(Icons.Default.Phone, "Позвонить", tint = Color(0xFF10B981))
+                            Icon(Icons.Default.Phone, "Позвонить", tint = MaterialTheme.colorScheme.tertiary)
                         }
                     }
                 }
@@ -769,9 +774,9 @@ private fun OrderActionButtons(
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
-                Icon(Icons.Default.Phone, null, modifier = Modifier.size(18.dp), tint = Color(0xFF10B981))
+                Icon(Icons.Default.Phone, null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.tertiary)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Позвонить клиенту", color = Color(0xFF10B981))
+                Text("Позвонить клиенту", color = MaterialTheme.colorScheme.tertiary)
             }
         }
     }
@@ -783,14 +788,14 @@ private fun DetailRow(label: String, value: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(0.35f)
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF1E293B),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(0.65f)
         )
     }
@@ -803,20 +808,20 @@ private fun DetailRow(icon: ImageVector, label: String, value: String) {
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(16.dp),
-            tint = Color(0xFF6366F1)
+            tint = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(0.3f)
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF1E293B),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(0.6f)
         )
     }

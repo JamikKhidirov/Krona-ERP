@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -126,7 +127,9 @@ fun PhotoUploadSection(
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                        error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
                     )
 
                     // Кнопка удаления
@@ -143,7 +146,7 @@ fun PhotoUploadSection(
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Удалить",
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.surface,
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -155,7 +158,7 @@ fun PhotoUploadSection(
             Text(
                 text = "Добавьте фото для точной оценки стоимости",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }

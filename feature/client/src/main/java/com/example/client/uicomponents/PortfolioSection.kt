@@ -19,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +43,7 @@ fun PortfolioSection() {
             text = "Примеры работ",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF1E293B),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
@@ -75,7 +76,7 @@ fun PortfolioSection() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Смотреть все портфолио",
-                    color = Color(0xFF6366F1),
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -83,7 +84,7 @@ fun PortfolioSection() {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = null,
-                    tint = Color(0xFF6366F1),
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(16.dp)
                 )
             }

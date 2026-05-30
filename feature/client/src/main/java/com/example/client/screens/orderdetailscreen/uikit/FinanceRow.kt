@@ -29,7 +29,7 @@ fun FinanceRow(
     label: String,
     value: String,
     isTotal: Boolean,
-    valueColor: Color = Color(0xFF1E293B)
+    valueColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Row(
         modifier = Modifier
@@ -44,7 +44,7 @@ fun FinanceRow(
             } else {
                 MaterialTheme.typography.bodyMedium
             },
-            color = if (isTotal) Color(0xFF1E293B) else Color(0xFF64748B),
+            color = if (isTotal) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = if (isTotal) FontWeight.Bold else FontWeight.Normal
         )
         Text(

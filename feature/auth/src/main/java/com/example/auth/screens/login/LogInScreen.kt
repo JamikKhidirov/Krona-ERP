@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.material3.MaterialTheme
 import com.example.auth.screens.login.uicomponents.CardLogInScreen
 import com.example.auth.screens.register.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch
@@ -62,7 +63,7 @@ fun LogInScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F7)),
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -113,7 +114,7 @@ fun LogInScreen(
             errorMessage?.let { error ->
                 Text(
                     text = error,
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier

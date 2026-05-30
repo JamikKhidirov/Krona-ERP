@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +51,7 @@ fun TimelineItem(
                     modifier = Modifier
                         .width(2.dp)
                         .height(20.dp)
-                        .background(Color(0xFFE2E8F0))
+                        .background(MaterialTheme.colorScheme.outlineVariant)
                 )
             } else {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -69,7 +68,7 @@ fun TimelineItem(
                     modifier = Modifier
                         .width(2.dp)
                         .height(40.dp)
-                        .background(Color(0xFFE2E8F0))
+                        .background(MaterialTheme.colorScheme.outlineVariant)
                 )
             }
         }
@@ -84,13 +83,13 @@ fun TimelineItem(
                 text = config.label,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
             if (status.date.isNotEmpty()) {
                 Text(
                     text = status.date,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
@@ -98,7 +97,7 @@ fun TimelineItem(
                 Text(
                     text = status.comment,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }

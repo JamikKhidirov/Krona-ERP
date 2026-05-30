@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -75,7 +76,7 @@ fun ManagerOrderCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         onClick = onClick
     ) {
@@ -95,7 +96,9 @@ fun ManagerOrderCard(
                         .fillMaxWidth()
                         .height(160.dp)
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                    error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
                 )
             }
 
@@ -109,21 +112,21 @@ fun ManagerOrderCard(
                     Text(
                         text = "#${order.id.takeLast(4).uppercase()}",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color(0xFF94A3B8)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // Приоритет
                         if (order.priority == OrderPriority.URGENT.name) {
                             Surface(
-                                color = Color(0xFFFEE2E2),
+                                color = MaterialTheme.colorScheme.errorContainer,
                                 shape = RoundedCornerShape(4.dp)
                             ) {
                                 Text(
                                     "СРОЧНО",
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Color(0xFFEF4444)
+                                    color = MaterialTheme.colorScheme.error
                                 )
                             }
                             Spacer(modifier = Modifier.width(8.dp))
@@ -141,7 +144,7 @@ fun ManagerOrderCard(
                     text = order.title.ifEmpty { order.productTypeName },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 // Краткое описание
@@ -150,7 +153,7 @@ fun ManagerOrderCard(
                     Text(
                         text = order.productTypeName,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -174,7 +177,7 @@ fun ManagerOrderCard(
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Divider(color = Color(0xFFF1F5F9))
+                Divider(color = MaterialTheme.colorScheme.surfaceVariant)
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // === КНОПКИ ДЕЙСТВИЙ ===
@@ -185,7 +188,7 @@ fun ManagerOrderCard(
                             onClick = onAssign,
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF6366F1)
+                                containerColor = MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Icon(Icons.Default.AddTask, null, modifier = Modifier.size(18.dp))
@@ -256,7 +259,7 @@ fun ManagerOrderCard(
                                     Icon(
                                         Icons.Default.Phone,
                                         "Позвонить",
-                                        tint = Color(0xFF10B981)
+                                        tint = MaterialTheme.colorScheme.tertiary
                                     )
                                 }
                             }
@@ -268,7 +271,7 @@ fun ManagerOrderCard(
                         Text(
                             "Менеджер: ${order.managerId.take(4)}...",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF94A3B8)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.client.screens.orderdetailscreen.core.formatDate
@@ -34,7 +33,7 @@ fun OrderHeader(order: Order) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -62,7 +61,7 @@ fun OrderHeader(order: Order) {
                 text = order.title.ifEmpty { order.productTypeName },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             // Дата создания — исправлено: Date(order.createdAt) вместо order.createdAt.toDate()
@@ -70,7 +69,7 @@ fun OrderHeader(order: Order) {
                 Text(
                     text = "Создан: ${formatDate(Date(order.createdAt))}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -85,13 +84,13 @@ fun OrderHeader(order: Order) {
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = Color(0xFF6366F1)
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Дедлайн: ${order.deadline}",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF6366F1),
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Medium
                     )
                 }

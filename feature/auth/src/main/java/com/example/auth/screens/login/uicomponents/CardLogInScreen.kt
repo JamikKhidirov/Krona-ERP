@@ -32,6 +32,7 @@ import com.example.auth.uikit.AuthButton
 import com.example.auth.uikit.AuthButtonState
 import com.example.auth.uikit.AuthTextFild
 import com.example.auth.uikit.AuthTextFildState
+import androidx.compose.material3.MaterialTheme
 import com.example.uikit.uikit.AuthText
 
 
@@ -60,7 +61,7 @@ fun CardLogInScreen(
             defaultElevation = 20.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF7F9FB)
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(
@@ -78,7 +79,7 @@ fun CardLogInScreen(
             )
             Text(
                 text = "Крона - Учёт заказов",
-                color = Color(0xFF25326A),
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 24.sp
             )
@@ -87,7 +88,7 @@ fun CardLogInScreen(
                 text = "Войдите в систему для управления\nмастерской",
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
-                color = Color(0xFF454650),
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .padding(top = 5.dp)
             )

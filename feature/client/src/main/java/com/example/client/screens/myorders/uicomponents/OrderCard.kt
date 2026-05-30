@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,7 +61,7 @@ fun OrderCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -84,13 +83,13 @@ fun OrderCard(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFF6366F1).copy(alpha = 0.1f)),
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = getProductTypeIcon(order.productTypeId),
                             contentDescription = null,
-                            tint = Color(0xFF6366F1),
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -102,12 +101,12 @@ fun OrderCard(
                             text = order.productTypeName,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "№${order.id.takeLast(6)} · $formattedDate",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF94A3B8)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -117,7 +116,7 @@ fun OrderCard(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            Divider(color = Color(0xFFF1F5F9))
+            Divider(color = MaterialTheme.colorScheme.surfaceVariant)
             Spacer(modifier = Modifier.height(12.dp))
 
             // Описание
@@ -125,7 +124,7 @@ fun OrderCard(
                 Text(
                     text = order.description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -143,7 +142,7 @@ fun OrderCard(
                     Icon(
                         imageVector = Icons.Default.AttachMoney,
                         contentDescription = null,
-                        tint = Color(0xFF6366F1),
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -151,7 +150,7 @@ fun OrderCard(
                         text = "${order.budget} ₽",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xFF6366F1)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -165,7 +164,7 @@ fun OrderCard(
                             append(" см")
                         },
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF94A3B8)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -177,14 +176,14 @@ fun OrderCard(
                     Icon(
                         imageVector = Icons.Default.PhotoLibrary,
                         contentDescription = null,
-                        tint = Color(0xFF94A3B8),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${order.imageUrls.size} фото",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF94A3B8)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

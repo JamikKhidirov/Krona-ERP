@@ -180,37 +180,55 @@ class ManagerOrdersRepository @Inject constructor(
 
     // ==================== ДЕЙСТВИЯ ====================
 
-    suspend fun assignOrder(orderId: String, managerId: String, managerName: String): Result<Unit> = try {
-        val currentUser = auth.currentUser ?: throw SecurityException("Не авторизован")
+    suspend fun assignOrder(orderId: String, managerId: String, managerName: String): Result<Unit> {
+        return try {
+            val currentUser = auth.currentUser ?: throw SecurityException("Не авторизован")
 
-        firestore.runTransaction { transaction ->
-            val docRef = ordersCollection.document(orderId)
-            val snapshot = transaction.get(docRef)
-
-            val currentManagerId = snapshot.getString("managerId") ?: ""
-            val currentStatus = snapshot.getString("status") ?: ""
-
-            if (currentManagerId.isNotBlank()) {
-                throw IllegalStateException("Заказ уже назначен другому менеджеру")
-            }
-            if (currentStatus != "PENDING") {
-                throw IllegalStateException("Заказ уже в работе")
+            val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
+            val role = userDoc.getString("role") ?: ""
+            if (role != "Менеджер") {
+                return Result.failure(SecurityException("Только менеджер может назначить заказ"))
             }
 
-            transaction.update(docRef, mapOf(
-                "managerId" to managerId,
-                "managerName" to managerName,
-                "status" to "ASSIGNED",
-                "assignedAt" to System.currentTimeMillis(),
-                "updatedAt" to System.currentTimeMillis()
-            ))
-        }.await()
+            var clientUserId = ""
+            firestore.runTransaction { transaction ->
+                val docRef = ordersCollection.document(orderId)
+                val snapshot = transaction.get(docRef)
 
-        addHistoryEntry(orderId, "ASSIGNED", managerName, "Менеджер взял заказ в работу").onFailure { }
+                val currentManagerId = snapshot.getString("managerId") ?: ""
+                val currentStatus = snapshot.getString("status") ?: ""
+                clientUserId = snapshot.getString("userId") ?: ""
 
-        Result.success(Unit)
-    } catch (e: Exception) {
-        Result.failure(e)
+                if (currentManagerId.isNotBlank()) {
+                    throw IllegalStateException("Заказ уже назначен другому менеджеру")
+                }
+                if (currentStatus != "PENDING") {
+                    throw IllegalStateException("Заказ уже в работе")
+                }
+
+                transaction.update(docRef, mapOf(
+                    "managerId" to managerId,
+                    "managerName" to managerName,
+                    "status" to "ASSIGNED",
+                    "assignedAt" to System.currentTimeMillis(),
+                    "updatedAt" to System.currentTimeMillis()
+                ))
+            }.await()
+
+            addHistoryEntry(orderId, "ASSIGNED", managerName, "Менеджер взял заказ в работу").onFailure { }
+
+            if (clientUserId.isNotBlank()) {
+                writeStatusNotification(
+                    orderId, clientUserId,
+                    "Заказ принят в работу",
+                    "Менеджер $managerName взял ваш заказ в работу"
+                )
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun updateOrderStatus(
@@ -219,7 +237,14 @@ class ManagerOrdersRepository @Inject constructor(
         comment: String = ""
     ): Result<Unit> {
         return try {
-            val managerId = auth.currentUser?.uid ?: throw SecurityException("Не авторизован")
+            val currentUser = auth.currentUser ?: throw SecurityException("Не авторизован")
+            val managerId = currentUser.uid
+
+            val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
+            val role = userDoc.getString("role") ?: ""
+            if (role != "Менеджер") {
+                return Result.failure(SecurityException("Только менеджер может изменять статус"))
+            }
 
             val orderDoc = ordersCollection.document(orderId).get().await()
             val orderManagerId = orderDoc.getString("managerId") ?: ""
@@ -254,21 +279,37 @@ class ManagerOrdersRepository @Inject constructor(
             }
             addHistoryEntry(orderId, newStatus.name, managerName, comment.ifBlank { "Статус изменён: $statusLabel" })
 
+            val clientUserId = orderDoc.getString("userId") ?: ""
+            if (clientUserId.isNotBlank()) {
+                writeStatusNotification(
+                    orderId, clientUserId,
+                    "Статус заказа обновлён",
+                    "Статус: $statusLabel"
+                )
+            }
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun addManagerComment(orderId: String, comment: String): Result<Unit> = try {
-        ordersCollection.document(orderId)
-            .update(
-                "managerComment", comment,
-                "updatedAt", System.currentTimeMillis()
-            ).await()
-        Result.success(Unit)
-    } catch (e: Exception) {
-        Result.failure(e)
+    suspend fun addManagerComment(orderId: String, comment: String): Result<Unit> {
+        return try {
+            val currentUser = auth.currentUser ?: throw SecurityException("Не авторизован")
+            val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
+            if (userDoc.getString("role") != "Менеджер") {
+                return Result.failure(SecurityException("Только менеджер может комментировать"))
+            }
+            ordersCollection.document(orderId)
+                .update(
+                    "managerComment", comment,
+                    "updatedAt", System.currentTimeMillis()
+                ).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun updateOrderDetails(
@@ -276,19 +317,26 @@ class ManagerOrdersRepository @Inject constructor(
         budget: String? = null,
         material: String? = null,
         title: String? = null
-    ): Result<Unit> = try {
-        val updates = mutableMapOf<String, Any>(
-            "updatedAt" to System.currentTimeMillis()
-        )
+    ): Result<Unit> {
+        return try {
+            val currentUser = auth.currentUser ?: throw SecurityException("Не авторизован")
+            val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
+            if (userDoc.getString("role") != "Менеджер") {
+                return Result.failure(SecurityException("Только менеджер может редактировать заказ"))
+            }
+            val updates = mutableMapOf<String, Any>(
+                "updatedAt" to System.currentTimeMillis()
+            )
 
-        budget?.let { updates["budget"] = it }
-        material?.let { updates["material"] = it }
-        title?.let { updates["title"] = it }
+            budget?.let { updates["budget"] = it }
+            material?.let { updates["material"] = it }
+            title?.let { updates["title"] = it }
 
-        ordersCollection.document(orderId).update(updates).await()
-        Result.success(Unit)
-    } catch (e: Exception) {
-        Result.failure(e)
+            ordersCollection.document(orderId).update(updates).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun getOrderById(orderId: String): Result<Order> {
@@ -401,5 +449,25 @@ class ManagerOrdersRepository @Inject constructor(
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    private suspend fun writeStatusNotification(
+        orderId: String,
+        userId: String,
+        title: String,
+        body: String
+    ) {
+        try {
+            val notifRef = firestore.collection("notifications").document()
+            notifRef.set(mapOf(
+                "id" to notifRef.id,
+                "userId" to userId,
+                "orderId" to orderId,
+                "title" to title,
+                "body" to body,
+                "createdAt" to System.currentTimeMillis(),
+                "read" to false
+            )).await()
+        } catch (_: Exception) { }
     }
 }

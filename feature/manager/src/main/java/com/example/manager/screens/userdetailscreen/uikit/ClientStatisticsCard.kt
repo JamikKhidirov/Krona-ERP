@@ -43,7 +43,7 @@ fun ClientStatisticsCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -52,7 +52,7 @@ fun ClientStatisticsCard(
                 text = "Статистика",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -65,13 +65,13 @@ fun ClientStatisticsCard(
                     value = totalOrders.toString(),
                     label = "Всего заказов",
                     icon = Icons.Default.ShoppingCart,
-                    iconColor = Color(0xFF6366F1)
+                    iconColor = MaterialTheme.colorScheme.primary
                 )
                 StatItem(
                     value = activeOrders.toString(),
                     label = "Активных",
                     icon = Icons.Default.TrendingUp,
-                    iconColor = Color(0xFF10B981)
+                    iconColor = MaterialTheme.colorScheme.tertiary
                 )
                 StatItem(
                     value = totalSpent,
@@ -89,27 +89,27 @@ fun ClientStatisticsCard(
                     Icon(
                         imageVector = Icons.Default.Event,
                         contentDescription = null,
-                        tint = Color(0xFF94A3B8),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Последний заказ: $lastOrderDate",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
             if (furnitureTypes.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
-                Divider(color = Color(0xFFE2E8F0))
+                Divider(color = MaterialTheme.colorScheme.outlineVariant)
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
                     text = "Предпочитает:",
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF64748B)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 FlowRow(

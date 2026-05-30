@@ -12,20 +12,30 @@ fun getStatusInfo(name: String): StatusInfo {
             color = Color(0xFFF59E0B),
             backgroundColor = Color(0xFFFEF3C7)
         )
+        OrderStatus.ASSIGNED.name -> StatusInfo(
+            label = "Назначен менеджеру",
+            color = Color(0xFF6366F1),
+            backgroundColor = Color(0xFFEEF2FF)
+        )
         OrderStatus.IN_PROGRESS.name -> StatusInfo(
             label = "В работе",
             color = Color(0xFF3B82F6),
             backgroundColor = Color(0xFFDBEAFE)
         )
-        OrderStatus.COMPLETED.name-> StatusInfo(
-            label = "Готов",
+        OrderStatus.READY.name -> StatusInfo(
+            label = "Готов к выдаче",
             color = Color(0xFF10B981),
             backgroundColor = Color(0xFFD1FAE5)
         )
         OrderStatus.DELIVERING.name -> StatusInfo(
-            label = "Доставлен",
+            label = "Доставляется",
             color = Color(0xFF8B5CF6),
             backgroundColor = Color(0xFFEDE9FE)
+        )
+        OrderStatus.COMPLETED.name-> StatusInfo(
+            label = "Выполнен",
+            color = Color(0xFF10B981),
+            backgroundColor = Color(0xFFD1FAE5)
         )
         OrderStatus.CANCELLED.name -> StatusInfo(
             label = "Отменён",

@@ -34,7 +34,7 @@ fun DangerZone(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.padding(vertical = 8.dp)
@@ -43,7 +43,7 @@ fun DangerZone(
                 text = "Аккаунт",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFEF4444),
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
             )
 
@@ -58,20 +58,20 @@ fun DangerZone(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
                     contentDescription = null,
-                    tint = Color(0xFFEF4444),
+                    tint = MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "Выйти из аккаунта",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFFEF4444),
+                    color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.weight(1f)
                 )
             }
 
             Divider(
-                color = Color(0xFFF1F5F9),
+                color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
 
@@ -86,14 +86,14 @@ fun DangerZone(
                 Icon(
                     imageVector = Icons.Default.DeleteForever,
                     contentDescription = null,
-                    tint = Color(0xFFDC2626),
+                    tint = MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "Удалить аккаунт",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFFDC2626),
+                    color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.weight(1f)
                 )
             }

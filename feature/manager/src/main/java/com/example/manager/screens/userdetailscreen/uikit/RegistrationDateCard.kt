@@ -49,7 +49,7 @@ fun RegistrationDateCard(date: Long) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -61,14 +61,14 @@ fun RegistrationDateCard(date: Long) {
             Icon(
                 imageVector = Icons.Default.CalendarToday,
                 contentDescription = null,
-                tint = Color(0xFF94A3B8),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(16.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Клиент с ${formatDateLong(date)}",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF94A3B8)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

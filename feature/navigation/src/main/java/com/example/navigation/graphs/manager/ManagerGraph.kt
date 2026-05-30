@@ -1,9 +1,12 @@
 package com.example.navigation.graphs.manager
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -12,6 +15,7 @@ import androidx.navigation.toRoute
 import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.dashboard.uikit.DashboardScreen
 import com.example.manager.screens.orderdetail.ManagerOrderDetailScreen
+import com.example.manager.screens.statistics.uikit.ManagerStatisticsScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
 import com.example.manager.screens.ManagerDestinations
 import com.example.manager.screens.userdetailscreen.UserDetailScreen
@@ -80,11 +84,27 @@ fun NavGraphBuilder.managerGraph(
         }
 
         composable<ManagerDestinations.DashboardScreenDestination> {
-            DashboardScreen()
+            DashboardScreen(
+                navController = navController,
+                onNavigateToStatistics = {
+                    navController.navigate(ManagerDestinations.StatisticsScreenDestination)
+                }
+            )
+        }
+
+        composable<ManagerDestinations.StatisticsScreenDestination> {
+            ManagerStatisticsScreen(
+                navController = navController
+            )
         }
 
         composable<ManagerDestinations.ProfileScreenDestination> {
-            val themeViewModel = hiltViewModel<ThemeViewModel>()
+            val activity = LocalContext.current as? ComponentActivity
+            val themeViewModel = if (activity != null) {
+                hiltViewModel<ThemeViewModel>(viewModelStoreOwner = activity)
+            } else {
+                hiltViewModel<ThemeViewModel>()
+            }
             val isDarkMode by themeViewModel.isDarkMode.collectAsState()
 
             MyProfileScreen(
