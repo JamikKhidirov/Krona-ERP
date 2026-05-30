@@ -205,6 +205,8 @@ class ManagerOrdersRepository @Inject constructor(
             ))
         }.await()
 
+        addHistoryEntry(orderId, "ASSIGNED", managerName, "Менеджер взял заказ в работу").onFailure { }
+
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
@@ -220,6 +222,7 @@ class ManagerOrdersRepository @Inject constructor(
 
             val orderDoc = ordersCollection.document(orderId).get().await()
             val orderManagerId = orderDoc.getString("managerId") ?: ""
+            val managerName = orderDoc.getString("managerName") ?: "Менеджер"
 
             if (orderManagerId != managerId) {
                 return Result.failure(SecurityException("Заказ назначен другому менеджеру"))
@@ -239,6 +242,17 @@ class ManagerOrdersRepository @Inject constructor(
             }
 
             ordersCollection.document(orderId).update(updates).await()
+
+            val statusLabel = when (newStatus) {
+                OrderStatus.IN_PROGRESS -> "В работе"
+                OrderStatus.READY -> "Готов к выдаче"
+                OrderStatus.DELIVERING -> "Доставляется"
+                OrderStatus.COMPLETED -> "Завершён"
+                OrderStatus.CANCELLED -> "Отменён"
+                else -> newStatus.name
+            }
+            addHistoryEntry(orderId, newStatus.name, managerName, comment.ifBlank { "Статус изменён: $statusLabel" })
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -271,6 +285,61 @@ class ManagerOrdersRepository @Inject constructor(
         title?.let { updates["title"] = it }
 
         ordersCollection.document(orderId).update(updates).await()
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    suspend fun getOrderById(orderId: String): Result<Order> = try {
+        val doc = ordersCollection.document(orderId).get().await()
+        if (!doc.exists()) {
+            return Result.failure(Exception("Заказ не найден"))
+        }
+        val order = doc.toObject(Order::class.java)?.copy(id = doc.id)
+            ?: return Result.failure(Exception("Ошибка парсинга заказа"))
+        Result.success(order)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    fun getOrderHistoryFlow(orderId: String): Flow<List<OrderHistoryItem>> = callbackFlow {
+        val listener = ordersCollection
+            .document(orderId)
+            .collection("history")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
+                val history = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(OrderHistoryItem::class.java)
+                } ?: emptyList()
+                trySend(history)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    suspend fun addHistoryEntry(
+        orderId: String,
+        status: String,
+        managerName: String,
+        comment: String = ""
+    ): Result<Unit> = try {
+        val managerId = auth.currentUser?.uid ?: throw SecurityException("Не авторизован")
+        val historyRef = ordersCollection
+            .document(orderId)
+            .collection("history")
+            .document()
+
+        val entry = mapOf(
+            "status" to status,
+            "managerId" to managerId,
+            "managerName" to managerName,
+            "comment" to comment,
+            "timestamp" to System.currentTimeMillis()
+        )
+        historyRef.set(entry).await()
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)

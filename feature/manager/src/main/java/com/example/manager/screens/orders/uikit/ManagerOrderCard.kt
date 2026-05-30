@@ -46,10 +46,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.manager.data.Order
 import com.example.manager.data.OrderPriority
 import com.example.manager.screens.orders.core.getStatusConfig
@@ -80,8 +82,24 @@ fun ManagerOrderCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
         ) {
+            // Фото товара (если есть)
+            if (order.imageUrls.isNotEmpty()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(order.imageUrls.firstOrNull())
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Фото товара",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp)
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Column(modifier = Modifier.padding(16.dp)) {
             // Верхняя строка: ID, статус, приоритет
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -125,6 +143,16 @@ fun ManagerOrderCard(
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1E293B)
             )
+
+            // Краткое описание
+            if (order.productTypeName.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = order.productTypeName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF64748B)
+                )
+            }
 
             // Клиент
             if (order.clientName.isNotBlank()) {

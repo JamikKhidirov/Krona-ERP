@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.manager.screens.clentscreen.ClientsScreen
+import com.example.manager.screens.orderdetail.ManagerOrderDetailScreen
 import com.example.manager.screens.orders.ManagerOrdersScreen
 import com.example.manager.screens.ManagerDestinations
 import com.example.manager.screens.userdetailscreen.UserDetailScreen
@@ -95,7 +95,7 @@ fun NavGraphBuilder.managerGraph(
         composable<ManagerDestinations.OrderDetailScreenDestination> {backStackEntry ->
             val destination = backStackEntry.toRoute<ManagerDestinations.OrderDetailScreenDestination>()
 
-            OrderDetailScreen(
+            ManagerOrderDetailScreen(
                 orderId = destination.orderId,
                 onNavigateBack = {
                     navController.popBackStack()
