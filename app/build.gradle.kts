@@ -83,6 +83,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-messaging")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // build.gradle.kts (app)
     implementation("androidx.core:core-splashscreen:1.2.0")

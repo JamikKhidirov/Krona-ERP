@@ -14,6 +14,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
@@ -31,6 +32,11 @@ fun ManagerBottomNavigation(
     navController: NavHostController = rememberNavController()
 ) {
     val items = listOf(
+        ManagerBottomNavItem(
+            label = "Дэшборд",
+            icon = Icons.Default.Dashboard,
+            route = ManagerDestinations.DashboardScreenDestination
+        ),
         ManagerBottomNavItem(
             label = "Клиенты",
             icon = Icons.Default.People,

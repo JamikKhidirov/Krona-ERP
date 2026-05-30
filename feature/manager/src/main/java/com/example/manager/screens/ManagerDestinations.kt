@@ -33,4 +33,8 @@ sealed class ManagerDestinations() {
     //Адрес экрана для списков заказов
     @Serializable
     data object OrdersScreenDestination: ManagerDestinations()
+
+    //Адрес экрана дэшборда
+    @Serializable
+    data object DashboardScreenDestination: ManagerDestinations()
 }

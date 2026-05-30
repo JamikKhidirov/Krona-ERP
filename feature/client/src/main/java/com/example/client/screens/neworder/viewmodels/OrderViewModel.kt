@@ -1,13 +1,14 @@
 package com.example.client.screens.neworder.viewmodels
 
+import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.client.data.order.Order
 import com.example.client.repository.OrderRepository
+import com.example.client.util.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.storage.StorageException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +22,10 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
+    application: Application,
     private val repository: OrderRepository,
     private val auth: FirebaseAuth
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _orders = MutableStateFlow<List<Order>>(emptyList())
     val orders: StateFlow<List<Order>> = _orders.asStateFlow()
@@ -89,7 +91,9 @@ class OrderViewModel @Inject constructor(
         heightCm: String,
         depthCm: String,
         comment: String = "",
-        imageUris: List<Uri>
+        imageUris: List<Uri>,
+        address: String = "",
+        city: String = ""
     ) {
         val userId = auth.currentUser?.uid
         if (userId == null) {
@@ -107,6 +111,11 @@ class OrderViewModel @Inject constructor(
             _error.value = null
             _orderCreated.value = false
 
+            val context = getApplication<Application>()
+            val base64Images = imageUris.mapNotNull { uri ->
+                ImageUtils.uriToBase64(context, uri)
+            }
+
             val order = Order(
                 userId = userId,
                 productTypeId = productTypeId,
@@ -116,19 +125,21 @@ class OrderViewModel @Inject constructor(
                 widthCm = widthCm.trim(),
                 heightCm = heightCm.trim(),
                 depthCm = depthCm.trim(),
-                comment = comment.trim()
+                comment = comment.trim(),
+                imageUrls = base64Images,
+                address = address.trim(),
+                city = city.trim(),
+                deliveryType = "SELF_PICKUP"
             )
 
-            repository.createOrder(order, imageUris)
+            repository.createOrder(order)
                 .onSuccess { orderId ->
                     _orderCreated.value = true
-                    // ✅ ИСПРАВЛЕНО: Очищаем ошибку при успехе
                     _error.value = null
                     loadUserOrders()
                 }
                 .onFailure { e ->
                     _error.value = when (e) {
-                        is StorageException -> "Ошибка фото: ${e.message}"
                         is FirebaseFirestoreException -> "Ошибка сохранения: ${e.message}"
                         else -> "Ошибка: ${e.message}"
                     }

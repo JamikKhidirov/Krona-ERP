@@ -165,6 +165,7 @@ fun ManagerOrderDetailScreen(
                     OrderDetailContent(
                         order = order!!,
                         history = history,
+                        viewModel = viewModel,
                         currentManagerId = viewModel.currentManagerId,
                         isLoading = isLoading,
                         onAssign = { viewModel.assignOrder(orderId) },
@@ -180,6 +181,7 @@ fun ManagerOrderDetailScreen(
 private fun OrderDetailContent(
     order: Order,
     history: List<OrderHistoryItem>,
+    viewModel: ManagerOrderDetailViewModel,
     currentManagerId: String,
     isLoading: Boolean,
     onAssign: () -> Unit,
@@ -229,6 +231,7 @@ private fun OrderDetailContent(
         }
 
         // Action buttons
+        // Action buttons
         item {
             OrderActionButtons(
                 order = order,
@@ -238,6 +241,17 @@ private fun OrderDetailContent(
                 onAssign = onAssign,
                 onUpdateStatus = onUpdateStatus
             )
+        }
+
+        // Chat Section
+        if (isMyOrder) {
+            item {
+                ChatSection(
+                    orderId = order.id,
+                    currentUserId = currentManagerId,
+                    viewModel = viewModel
+                )
+            }
         }
 
         item { Spacer(modifier = Modifier.height(16.dp)) }

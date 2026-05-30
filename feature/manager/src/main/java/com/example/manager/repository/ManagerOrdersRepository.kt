@@ -1,5 +1,6 @@
 package com.example.manager.repository
 
+import com.example.manager.data.ChatMessage
 import com.example.manager.data.Order
 import com.example.manager.data.OrderHistoryItem
 import com.example.network.data.OrderStatus
@@ -360,6 +361,44 @@ class ManagerOrdersRepository @Inject constructor(
         }
 
         Result.success(history)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    fun getChatMessages(orderId: String): Flow<List<ChatMessage>> = callbackFlow {
+        val listener = ordersCollection
+            .document(orderId)
+            .collection("chat")
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
+                val messages = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(ChatMessage::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                trySend(messages)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    suspend fun sendChatMessage(orderId: String, text: String): Result<Unit> = try {
+        val user = auth.currentUser ?: throw SecurityException("Не авторизован")
+        val chatRef = ordersCollection
+            .document(orderId)
+            .collection("chat")
+            .document()
+
+        val name = user.displayName ?: user.email ?: "Пользователь"
+        val message = mapOf(
+            "senderId" to user.uid,
+            "senderName" to name,
+            "text" to text,
+            "timestamp" to System.currentTimeMillis()
+        )
+        chatRef.set(message).await()
+        Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
     }

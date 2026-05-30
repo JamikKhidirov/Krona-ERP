@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,14 +17,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
@@ -42,7 +40,8 @@ import coil.compose.AsyncImage
 @Composable
 fun PhotoUploadSection(
     selectedImages: List<Uri>,
-    onAddPhoto: () -> Unit,
+    onAddPhotoFromGallery: () -> Unit,
+    onAddPhotoFromCamera: () -> Unit = {},
     onRemovePhoto: (Uri) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -58,7 +57,7 @@ fun PhotoUploadSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Кнопка добавления
+            // Кнопка добавления из галереи
             item {
                 Box(
                     modifier = Modifier
@@ -69,19 +68,48 @@ fun PhotoUploadSection(
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .clickable { onAddPhoto() },
+                        .clickable { onAddPhotoFromGallery() },
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Добавить фото",
+                            imageVector = Icons.Default.PhotoLibrary,
+                            contentDescription = "Галерея",
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "Добавить",
+                            text = "Галерея",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+
+            // Кнопка камеры
+            item {
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            width = 2.dp,
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .clickable { onAddPhotoFromCamera() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Камера",
+                            tint = MaterialTheme.colorScheme.tertiary
+                        )
+                        Text(
+                            text = "Камера",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }

@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.uikit.core.restartApp
+
 import com.example.uikit.screens.uikit.AddressCard
 import com.example.uikit.screens.uikit.ChangePasswordDialog
 import com.example.uikit.screens.uikit.DangerZone
@@ -55,7 +55,9 @@ fun MyProfileScreen(
     navController: NavHostController,
     viewModel: MyProfileViewModel = hiltViewModel(),
     onNavigateToAuth: () -> Unit,
-    bottomBar: @Composable (NavHostController) -> Unit
+    bottomBar: @Composable (NavHostController) -> Unit,
+    isDarkMode: Boolean = false,
+    onToggleDarkMode: () -> Unit = {}
 ) {
     val client by viewModel.client.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -172,7 +174,9 @@ fun MyProfileScreen(
                                     viewModel.sendEmailVerification()
                                 },
                                 isEmailVerified = viewModel.isEmailVerified(),
-                                email = viewModel.getCurrentEmail()
+                                email = viewModel.getCurrentEmail(),
+                                isDarkMode = isDarkMode,
+                                onToggleDarkMode = onToggleDarkMode
                             )
                         }
 

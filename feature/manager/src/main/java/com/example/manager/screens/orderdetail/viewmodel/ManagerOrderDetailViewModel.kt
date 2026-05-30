@@ -2,11 +2,13 @@ package com.example.manager.screens.orderdetail.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.manager.data.ChatMessage
 import com.example.manager.data.Order
 import com.example.manager.data.OrderHistoryItem
 import com.example.manager.repository.ManagerOrdersRepository
 import com.example.network.data.OrderStatus
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.Flow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -108,6 +110,19 @@ class ManagerOrderDetailViewModel @Inject constructor(
 
     fun clearSuccessMessage() {
         _successMessage.value = null
+    }
+
+    fun getChatMessages(orderId: String): Flow<List<ChatMessage>> {
+        return repository.getChatMessages(orderId)
+    }
+
+    fun sendChatMessage(orderId: String, text: String) {
+        viewModelScope.launch {
+            repository.sendChatMessage(orderId, text)
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка отправки сообщения"
+                }
+        }
     }
 
     private fun getManagerName(): String {

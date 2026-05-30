@@ -1,6 +1,9 @@
 package com.example.navigation.graphs.client
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.internal.composableLambda
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -15,6 +18,7 @@ import com.example.manager.uikit.bottombar.ManagerBottomNavigation
 import com.example.navigation.graphs.auth.destinations.AuthDestinations
 import com.example.uikit.ClientDestinations
 import com.example.uikit.screens.MyProfileScreen
+import com.example.uikit.screens.viewmodel.ThemeViewModel
 import com.example.uikit.uikit.ClientBottomNavigation
 
 
@@ -48,12 +52,17 @@ fun NavGraphBuilder.clientGraph(
             )
         }
         composable<ClientDestinations.ProfileScreenDestination> {
+            val themeViewModel = hiltViewModel<ThemeViewModel>()
+            val isDarkMode by themeViewModel.isDarkMode.collectAsState()
+
             MyProfileScreen(
                 navController = navController,
                 onNavigateToAuth = {},
                 bottomBar = {navController
                     ClientBottomNavigation(navController = navController)
-                }
+                },
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = { themeViewModel.toggleDarkMode() }
             )
         }
 
