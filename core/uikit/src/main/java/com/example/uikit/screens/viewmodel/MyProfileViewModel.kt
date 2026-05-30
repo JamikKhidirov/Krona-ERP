@@ -117,8 +117,74 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
+    fun sendPasswordResetEmail(email: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                _successMessage.value = "Письмо для сброса пароля отправлено на $email"
+            } catch (e: Exception) {
+                _error.value = "Ошибка: ${e.message}"
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun sendEmailVerification() {
+        val user = auth.currentUser ?: return
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                user.sendEmailVerification().await()
+                _successMessage.value = "Письмо подтверждения отправлено на ${user.email}"
+            } catch (e: Exception) {
+                _error.value = "Ошибка: ${e.message}"
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun getCurrentEmail(): String = auth.currentUser?.email ?: ""
+
+    fun isEmailVerified(): Boolean = auth.currentUser?.isEmailVerified ?: false
+
+    fun reloadUser() {
+        viewModelScope.launch {
+            try {
+                auth.currentUser?.reload()?.await()
+                _client.value?.let { _client.value = it.copy() }
+            } catch (_: Exception) { }
+        }
+    }
+
+    fun changePassword(currentPassword: String, newPassword: String) {
+        val user = auth.currentUser ?: return
+        val email = user.email ?: return
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val credential = com.google.firebase.auth.EmailAuthProvider
+                    .getCredential(email, currentPassword)
+                user.reauthenticate(credential).await()
+                user.updatePassword(newPassword).await()
+                _successMessage.value = "Пароль успешно изменён"
+            } catch (e: Exception) {
+                _error.value = "Ошибка: ${e.message}"
+            }
+            _isLoading.value = false
+        }
+    }
+
+    private val _successMessage = MutableStateFlow<String?>(null)
+    val successMessage: StateFlow<String?> = _successMessage.asStateFlow()
+
     fun clearError() {
         _error.value = null
+    }
+
+    fun clearSuccessMessage() {
+        _successMessage.value = null
     }
 }
 

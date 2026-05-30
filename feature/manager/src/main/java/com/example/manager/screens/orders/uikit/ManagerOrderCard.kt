@@ -100,172 +100,177 @@ fun ManagerOrderCard(
             }
 
             Column(modifier = Modifier.padding(16.dp)) {
-            // Верхняя строка: ID, статус, приоритет
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "#${order.id.takeLast(4).uppercase()}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF94A3B8)
-                )
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Приоритет
-                    if (order.priority == OrderPriority.URGENT.name) {
-                        Surface(
-                            color = Color(0xFFFEE2E2),
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Text(
-                                "СРОЧНО",
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFFEF4444)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-
-                    // Статус
-                    StatusChip(status = order.status)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Название
-            Text(
-                text = order.title.ifEmpty { order.productTypeName },
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
-            )
-
-            // Краткое описание
-            if (order.productTypeName.isNotBlank()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = order.productTypeName,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF64748B)
-                )
-            }
-
-            // Клиент
-            if (order.clientName.isNotBlank()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                InfoRow(
-                    icon = Icons.Default.Person,
-                    text = "${order.clientName} · ${order.clientPhone}"
-                )
-            }
-
-            // Бюджет и материал
-            Spacer(modifier = Modifier.height(8.dp))
-            Row {
-                InfoRow(icon = Icons.Default.AttachMoney, text = "${order.budget} ₽")
-                Spacer(modifier = Modifier.width(16.dp))
-                if (order.material.isNotBlank()) {
-                    InfoRow(icon = Icons.Default.Build, text = order.material)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-            Divider(color = Color(0xFFF1F5F9))
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // === КНОПКИ ДЕЙСТВИЙ ===
-            when {
-                // Заказ свободен — кнопка "Взять в работу"
-                isUnassigned -> {
-                    Button(
-                        onClick = onAssign,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF6366F1)
-                        )
-                    ) {
-                        Icon(Icons.Default.AddTask, null, modifier = Modifier.size(18.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Взять в работу")
-                    }
-                }
-
-                // Мой заказ — кнопки управления статусом
-                isMyOrder -> {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // Кнопка смены статуса
-                        Box(modifier = Modifier.weight(1f)) {
-                            OutlinedButton(
-                                onClick = { showStatusMenu = true },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text("Изменить статус")
-                            }
-
-                            DropdownMenu(
-                                expanded = showStatusMenu,
-                                onDismissRequest = { showStatusMenu = false }
-                            ) {
-                                val availableStatuses = when (order.status) {
-                                    OrderStatus.ASSIGNED.name -> listOf(
-                                        OrderStatus.IN_PROGRESS,
-                                        OrderStatus.CANCELLED
-                                    )
-                                    OrderStatus.IN_PROGRESS.name -> listOf(
-                                        OrderStatus.READY,
-                                        OrderStatus.CANCELLED
-                                    )
-                                    OrderStatus.READY.name -> listOf(
-                                        OrderStatus.DELIVERING,
-                                        OrderStatus.COMPLETED
-                                    )
-                                    OrderStatus.DELIVERING.name -> listOf(
-                                        OrderStatus.COMPLETED
-                                    )
-                                    else -> emptyList()
-                                }
-
-                                availableStatuses.forEach { status ->
-                                    DropdownMenuItem(
-                                        text = { Text(getStatusLabel(status)) },
-                                        onClick = {
-                                            onUpdateStatus(status)
-                                            showStatusMenu = false
-                                        }
-                                    )
-                                }
-                            }
-                        }
-
-                        // Кнопка звонка клиенту
-                        if (order.clientPhone.isNotBlank()) {
-                            IconButton(
-                                onClick = { /* Intent на звонок */ }
-                            ) {
-                                Icon(
-                                    Icons.Default.Phone,
-                                    "Позвонить",
-                                    tint = Color(0xFF10B981)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                // Заказ другого менеджера
-                else -> {
+                // Верхняя строка: ID, статус, приоритет
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        "Менеджер: ${order.managerId.take(4)}...",
-                        style = MaterialTheme.typography.bodySmall,
+                        text = "#${order.id.takeLast(4).uppercase()}",
+                        style = MaterialTheme.typography.labelMedium,
                         color = Color(0xFF94A3B8)
                     )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Приоритет
+                        if (order.priority == OrderPriority.URGENT.name) {
+                            Surface(
+                                color = Color(0xFFFEE2E2),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    "СРОЧНО",
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFFEF4444)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+
+                        // Статус
+                        StatusChip(status = order.status)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Название
+                Text(
+                    text = order.title.ifEmpty { order.productTypeName },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E293B)
+                )
+
+                // Краткое описание
+                if (order.productTypeName.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = order.productTypeName,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF64748B)
+                    )
+                }
+
+                // Клиент
+                if (order.clientName.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    InfoRow(
+                        icon = Icons.Default.Person,
+                        text = "${order.clientName} · ${order.clientPhone}"
+                    )
+                }
+
+                // Бюджет и материал
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    InfoRow(icon = Icons.Default.AttachMoney, text = "${order.budget} ₽")
+                    Spacer(modifier = Modifier.width(16.dp))
+                    if (order.material.isNotBlank()) {
+                        InfoRow(icon = Icons.Default.Build, text = order.material)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Divider(color = Color(0xFFF1F5F9))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // === КНОПКИ ДЕЙСТВИЙ ===
+                when {
+                    // Заказ свободен — кнопка "Взять в работу"
+                    isUnassigned -> {
+                        Button(
+                            onClick = onAssign,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF6366F1)
+                            )
+                        ) {
+                            Icon(Icons.Default.AddTask, null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Взять в работу")
+                        }
+                    }
+
+                    // Мой заказ — кнопки управления статусом
+                    isMyOrder -> {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            // Кнопка смены статуса
+                            Box(modifier = Modifier.weight(1f)) {
+                                OutlinedButton(
+                                    onClick = { showStatusMenu = true },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Изменить статус")
+                                }
+
+                                DropdownMenu(
+                                    expanded = showStatusMenu,
+                                    onDismissRequest = { showStatusMenu = false }
+                                ) {
+                                    val availableStatuses = when (order.status) {
+                                        OrderStatus.ASSIGNED.name -> listOf(
+                                            OrderStatus.IN_PROGRESS,
+                                            OrderStatus.CANCELLED
+                                        )
+
+                                        OrderStatus.IN_PROGRESS.name -> listOf(
+                                            OrderStatus.READY,
+                                            OrderStatus.CANCELLED
+                                        )
+
+                                        OrderStatus.READY.name -> listOf(
+                                            OrderStatus.DELIVERING,
+                                            OrderStatus.COMPLETED
+                                        )
+
+                                        OrderStatus.DELIVERING.name -> listOf(
+                                            OrderStatus.COMPLETED
+                                        )
+
+                                        else -> emptyList()
+                                    }
+
+                                    availableStatuses.forEach { status ->
+                                        DropdownMenuItem(
+                                            text = { Text(getStatusLabel(status)) },
+                                            onClick = {
+                                                onUpdateStatus(status)
+                                                showStatusMenu = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                            // Кнопка звонка клиенту
+                            if (order.clientPhone.isNotBlank()) {
+                                IconButton(
+                                    onClick = { /* Intent на звонок */ }
+                                ) {
+                                    Icon(
+                                        Icons.Default.Phone,
+                                        "Позвонить",
+                                        tint = Color(0xFF10B981)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // Заказ другого менеджера
+                    else -> {
+                        Text(
+                            "Менеджер: ${order.managerId.take(4)}...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFF94A3B8)
+                        )
+                    }
                 }
             }
         }

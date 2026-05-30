@@ -290,16 +290,18 @@ class ManagerOrdersRepository @Inject constructor(
         Result.failure(e)
     }
 
-    suspend fun getOrderById(orderId: String): Result<Order> = try {
-        val doc = ordersCollection.document(orderId).get().await()
-        if (!doc.exists()) {
-            return Result.failure(Exception("Заказ не найден"))
+    suspend fun getOrderById(orderId: String): Result<Order> {
+        return try {
+            val doc = ordersCollection.document(orderId).get().await()
+            if (!doc.exists()) {
+                return Result.failure(Exception("Заказ не найден"))
+            }
+            val order = doc.toObject(Order::class.java)?.copy(id = doc.id)
+                ?: return Result.failure(Exception("Ошибка парсинга заказа"))
+            Result.success(order)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-        val order = doc.toObject(Order::class.java)?.copy(id = doc.id)
-            ?: return Result.failure(Exception("Ошибка парсинга заказа"))
-        Result.success(order)
-    } catch (e: Exception) {
-        Result.failure(e)
     }
 
     fun getOrderHistoryFlow(orderId: String): Flow<List<OrderHistoryItem>> = callbackFlow {

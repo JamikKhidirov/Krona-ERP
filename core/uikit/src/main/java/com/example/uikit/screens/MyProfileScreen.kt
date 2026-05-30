@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,9 +33,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.uikit.core.restartApp
 import com.example.uikit.screens.uikit.AddressCard
+import com.example.uikit.screens.uikit.ChangePasswordDialog
 import com.example.uikit.screens.uikit.DangerZone
 import com.example.uikit.screens.uikit.DeleteAccountDialog
 import com.example.uikit.screens.uikit.EditProfileDialog
+import com.example.uikit.screens.uikit.ForgotPasswordDialog
 import com.example.uikit.screens.uikit.EmptyState
 import com.example.uikit.screens.uikit.LogoutConfirmDialog
 import com.example.uikit.screens.uikit.MyContactsCard
@@ -56,13 +60,17 @@ fun MyProfileScreen(
     val client by viewModel.client.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val success by viewModel.successMessage.collectAsState()
 
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // Диалоги
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
+    var showChangePasswordDialog by remember { mutableStateOf(false) }
+    var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadCurrentUser()
@@ -76,11 +84,21 @@ fun MyProfileScreen(
         }
     }
 
-    // ✅ ИСПРАВЛЕНО: Обработка навигационных событий
-
-
+    LaunchedEffect(error) {
+        error?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearError()
+        }
+    }
+    LaunchedEffect(success) {
+        success?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearSuccessMessage()
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Мой профиль") },
@@ -101,7 +119,7 @@ fun MyProfileScreen(
                 .padding(padding)
         ) {
             when {
-                isLoading -> {
+                isLoading && client == null -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -148,8 +166,13 @@ fun MyProfileScreen(
                         item {
                             SettingsSection(
                                 onEditProfile = { showEditDialog = true },
-                                onChangePassword = { /* TODO */ },
-                                onNotifications = { /* TODO */ }
+                                onChangePassword = { showChangePasswordDialog = true },
+                                onForgotPassword = { showForgotPasswordDialog = true },
+                                onEmailVerification = {
+                                    viewModel.sendEmailVerification()
+                                },
+                                isEmailVerified = viewModel.isEmailVerified(),
+                                email = viewModel.getCurrentEmail()
                             )
                         }
 
@@ -176,7 +199,6 @@ fun MyProfileScreen(
             onConfirm = {
                 showLogoutDialog = false
                 viewModel.logout()
-
             },
             onDismiss = { showLogoutDialog = false }
         )
@@ -205,10 +227,26 @@ fun MyProfileScreen(
         )
     }
 
-    // Ошибка
-    error?.let {
-        LaunchedEffect(it) {
-            viewModel.clearError()
-        }
+    // Диалог смены пароля
+    if (showChangePasswordDialog) {
+        ChangePasswordDialog(
+            currentEmail = viewModel.getCurrentEmail(),
+            onChangePassword = { currentPassword, newPassword ->
+                viewModel.changePassword(currentPassword, newPassword)
+                showChangePasswordDialog = false
+            },
+            onDismiss = { showChangePasswordDialog = false }
+        )
+    }
+
+    // Диалог восстановления пароля
+    if (showForgotPasswordDialog) {
+        ForgotPasswordDialog(
+            onSend = { email ->
+                viewModel.sendPasswordResetEmail(email)
+                showForgotPasswordDialog = false
+            },
+            onDismiss = { showForgotPasswordDialog = false }
+        )
     }
 }
