@@ -1,14 +1,13 @@
 package com.example.client.screens.orderdetailscreen.viewmodel
 
 
-
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.client.screens.orderdetailscreen.data.ChatMessage
 import com.example.client.screens.orderdetailscreen.data.Order
-
 import com.example.client.screens.orderdetailscreen.repository.OrderDetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,5 +56,16 @@ class OrderDetailViewModel @Inject constructor(
 
     fun refresh(orderId: String) = loadOrder(orderId)
 
+    fun getChatMessages(orderId: String): Flow<List<ChatMessage>> {
+        return repository.getChatMessages(orderId)
+    }
 
+    fun sendChatMessage(orderId: String, text: String) {
+        viewModelScope.launch {
+            repository.sendChatMessage(orderId, text)
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка отправки сообщения"
+                }
+        }
+    }
 }

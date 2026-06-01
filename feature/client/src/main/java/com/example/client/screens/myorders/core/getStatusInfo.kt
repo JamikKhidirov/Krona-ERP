@@ -37,6 +37,11 @@ fun getStatusInfo(name: String): StatusInfo {
             color = Color(0xFF10B981),
             backgroundColor = Color(0xFFD1FAE5)
         )
+        OrderStatus.PAID.name -> StatusInfo(
+            label = "Оплачен",
+            color = Color(0xFF059669),
+            backgroundColor = Color(0xFFD1FAE5)
+        )
         OrderStatus.CANCELLED.name -> StatusInfo(
             label = "Отменён",
             color = Color(0xFFEF4444),

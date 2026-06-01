@@ -1,76 +1,117 @@
 package com.example.client.screens.orderdetailscreen.uikit
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.client.screens.orderdetailscreen.OrderDetailScreen
 import com.example.client.screens.orderdetailscreen.data.Document
 import com.example.client.screens.orderdetailscreen.data.Order
 import com.example.client.screens.orderdetailscreen.data.StatusUpdate
-import com.example.client.screens.orderdetailscreen.repository.OrderDetailRepository
+import com.example.client.screens.orderdetailscreen.viewmodel.OrderDetailViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 
 @Composable
 fun OrderDetailContent(
     order: Order,
+    orderId: String,
+    viewModel: OrderDetailViewModel,
+    currentUserId: String,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Шапка с названием и статусом
         item { OrderHeader(order) }
 
-        // Таймлайн статусов
         item { StatusTimeline(order.statusHistory) }
 
-        // Фото изделия
         if (order.imageUrls.isNotEmpty()) {
             item { OrderPhotos(order.imageUrls) }
         }
 
-        // Характеристики
         item { CharacteristicsSection(order) }
 
-        // Документы
         if (order.documents.isNotEmpty()) {
             item { DocumentsSection(order.documents) }
         }
 
-        // Мастер
         if (order.masterName.isNotEmpty()) {
             item { MasterCard(order) }
         }
 
-        // Финансы
         item { FinanceSection(order) }
 
-        // Комментарий
         if (order.comment.isNotEmpty()) {
             item { CommentSection(order.comment) }
         }
 
-        // Нижний отступ
+        // Кнопки связи с менеджером
+        if (order.managerId.isNotBlank()) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Связь с менеджером",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = {
+                                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${order.managerPhone}"))
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier.weight(1f),
+                                enabled = order.managerPhone.isNotBlank()
+                            ) {
+                                Icon(Icons.Default.Phone, null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Позвонить")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Чат с менеджером
+        if (order.managerId.isNotBlank()) {
+            item {
+                ChatSection(
+                    orderId = orderId,
+                    currentUserId = currentUserId,
+                    viewModel = viewModel
+                )
+            }
+        }
+
         item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 
-
-
-
-
-// Добавь в конец файла OrderDetailScreen.kt
 
 @Preview(showBackground = true, device = "id:pixel_5")
 @Composable
@@ -98,7 +139,7 @@ private fun OrderDetailScreenPreview() {
                 StatusUpdate("MATERIALS", "18.10.2023", "Расход материалов"),
                 StatusUpdate("ASSEMBLY", "25.10.2023", "Сборка модулей")
             ),
-            createdAt = System.currentTimeMillis() - 86400000 * 17, // 17 дней назад
+            createdAt = System.currentTimeMillis() - 86400000 * 17,
             deadline = "04.11.2023",
             material = "МДФ Эмаль Мат",
             color = "Белый (матовый)",
@@ -113,20 +154,14 @@ private fun OrderDetailScreenPreview() {
                 Document("Схема_обмер.pdf", "https://example.com/doc2.pdf", "3.4 МБ")
             ),
             paidAmount = "225 000",
-            comment = "Прошу учесть дополнительное освещение над рабочей зоной. Варочная панель индукционная, духовка с функцией пара."
+            comment = "Прошу учесть дополнительное освещение над рабочей зоной."
         )
-
-        // Используем remember для имитации StateFlow
-        val orderFlow = remember { MutableStateFlow<Order?>(previewOrder) }
-        val loadingFlow = remember { MutableStateFlow(false) }
-        val errorFlow = remember { MutableStateFlow<String?>(null) }
-
-        // Создаём фейковый ViewModel для Preview
-
 
         OrderDetailContent(
             order = previewOrder,
+            orderId = "preview-123",
+            viewModel = TODO(),
+            currentUserId = "user-1"
         )
 
 }
-

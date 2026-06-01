@@ -70,8 +70,8 @@ fun ManagerOrderCard(
     val statusConfig = getStatusConfig(order.status)
     val isMyOrder = order.managerId == currentManagerId
     val isUnassigned = order.managerId.isBlank() && order.status == OrderStatus.PENDING.name
-
     var showStatusMenu by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -236,6 +236,12 @@ fun ManagerOrderCard(
                                             OrderStatus.COMPLETED
                                         )
 
+                                        OrderStatus.COMPLETED.name -> listOf(
+                                            OrderStatus.PAID
+                                        )
+
+                                        OrderStatus.PAID.name -> emptyList()
+
                                         else -> emptyList()
                                     }
 
@@ -254,7 +260,10 @@ fun ManagerOrderCard(
                             // Кнопка звонка клиенту
                             if (order.clientPhone.isNotBlank()) {
                                 IconButton(
-                                    onClick = { /* Intent на звонок */ }
+                                    onClick = {
+                                        val intent = android.content.Intent(android.content.Intent.ACTION_DIAL, android.net.Uri.parse("tel:${order.clientPhone}"))
+                                        context.startActivity(intent)
+                                    }
                                 ) {
                                     Icon(
                                         Icons.Default.Phone,

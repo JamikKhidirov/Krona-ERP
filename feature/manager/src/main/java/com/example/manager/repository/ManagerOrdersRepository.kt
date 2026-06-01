@@ -266,6 +266,9 @@ class ManagerOrdersRepository @Inject constructor(
             if (newStatus == OrderStatus.COMPLETED) {
                 updates["completedAt"] = System.currentTimeMillis()
             }
+            if (newStatus == OrderStatus.PAID) {
+                updates["paymentStatus"] = "PAID"
+            }
 
             ordersCollection.document(orderId).update(updates).await()
 
@@ -274,6 +277,7 @@ class ManagerOrdersRepository @Inject constructor(
                 OrderStatus.READY -> "Готов к выдаче"
                 OrderStatus.DELIVERING -> "Доставляется"
                 OrderStatus.COMPLETED -> "Завершён"
+                OrderStatus.PAID -> "Оплачен"
                 OrderStatus.CANCELLED -> "Отменён"
                 else -> newStatus.name
             }

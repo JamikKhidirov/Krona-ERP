@@ -228,7 +228,7 @@ data class Order(
         val ACTIVE_STATUSES = listOf("PENDING", "ASSIGNED", "IN_PROGRESS", "READY", "DELIVERING")
 
         /** Статусы, при которых заказ завершён */
-        val FINAL_STATUSES = listOf("COMPLETED", "CANCELLED")
+        val FINAL_STATUSES = listOf("COMPLETED", "PAID", "CANCELLED")
     }
 }
 

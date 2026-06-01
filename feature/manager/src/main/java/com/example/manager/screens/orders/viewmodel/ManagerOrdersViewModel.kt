@@ -53,7 +53,6 @@ class ManagerOrdersViewModel @Inject constructor(
     val myOrders: StateFlow<List<Order>> = repository.getMyOrdersSimple(currentManagerId)  // <-- БЕЗ ИНДЕКСА
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    // ✅ ИСПРАВЛЕНО: Фильтрация безопасная
     val orders: StateFlow<List<Order>> = combine(
         allOrders,
         _selectedFilter
@@ -67,6 +66,7 @@ class ManagerOrdersViewModel @Inject constructor(
             }
             OrderFilter.READY -> orders.filter { it.status == "READY" }
             OrderFilter.COMPLETED -> orders.filter { it.status == "COMPLETED" }
+            OrderFilter.PAID -> orders.filter { it.status == "PAID" }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -132,6 +132,10 @@ class ManagerOrdersViewModel @Inject constructor(
         _successMessage.value = null
     }
 
+    init {
+        _isLoading.value = true
+    }
+
     private fun getManagerName(): String {
         return auth.currentUser?.displayName ?: "Менеджер"
     }
@@ -145,10 +149,7 @@ class ManagerOrdersViewModel @Inject constructor(
             OrderStatus.DELIVERING -> "Доставляется"
             OrderStatus.COMPLETED -> "Выполнен"
             OrderStatus.CANCELLED -> "Отменён"
+            OrderStatus.PAID -> "Оплачен"
         }
     }
-}
-
-enum class OrderFilter {
-    ALL, NEW, MY_ORDERS, IN_PROGRESS, READY, COMPLETED
 }

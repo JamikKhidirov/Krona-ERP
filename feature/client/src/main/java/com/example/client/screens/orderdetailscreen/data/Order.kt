@@ -82,7 +82,16 @@ data class Order(
     val paidAmount: String = "0",
 
     @PropertyName("comment")
-    val comment: String = ""
+    val comment: String = "",
+
+    @PropertyName("managerId")
+    val managerId: String = "",
+
+    @PropertyName("managerName")
+    val managerName: String = "",
+
+    @PropertyName("managerPhone")
+    val managerPhone: String = ""
 ) {
     // Для Firestore — нужен пустой конструктор, уже есть default values
 

@@ -43,6 +43,7 @@ fun ClientOrderCard(
         OrderStatus.PENDING.name -> Color(0xFFF59E0B)
         OrderStatus.IN_PROGRESS.name -> Color(0xFF3B82F6)
         OrderStatus.COMPLETED.name -> MaterialTheme.colorScheme.tertiary
+        OrderStatus.PAID.name -> Color(0xFF059669)
         OrderStatus.CANCELLED.name -> MaterialTheme.colorScheme.error
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
@@ -51,6 +52,7 @@ fun ClientOrderCard(
         OrderStatus.PENDING.name -> "Ожидает"
         OrderStatus.IN_PROGRESS.name -> "В работе"
         OrderStatus.COMPLETED.name -> "Выполнен"
+        OrderStatus.PAID.name -> "Оплачен"
         OrderStatus.CANCELLED.name -> "Отменён"
         else -> order.status
     }

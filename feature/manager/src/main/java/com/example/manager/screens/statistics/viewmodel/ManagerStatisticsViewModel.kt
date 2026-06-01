@@ -83,6 +83,7 @@ class ManagerStatisticsViewModel @Inject constructor(
                     "READY" to "Готов",
                     "DELIVERING" to "Доставка",
                     "COMPLETED" to "Завершён",
+                    "PAID" to "Оплачен",
                     "CANCELLED" to "Отменён"
                 )
 
@@ -93,6 +94,7 @@ class ManagerStatisticsViewModel @Inject constructor(
                     "READY" to 0xFF10B981,
                     "DELIVERING" to 0xFF06B6D4,
                     "COMPLETED" to 0xFF059669,
+                    "PAID" to 0xFF059669,
                     "CANCELLED" to 0xFFEF4444
                 )
 
@@ -121,7 +123,7 @@ class ManagerStatisticsViewModel @Inject constructor(
 
                 val statusStats = listOf(
                     "PENDING", "ASSIGNED", "IN_PROGRESS", "READY",
-                    "DELIVERING", "COMPLETED", "CANCELLED"
+                    "DELIVERING", "COMPLETED", "PAID", "CANCELLED"
                 ).map { status ->
                     val count = orders.count { it.status == status }
                     StatusStat(

@@ -50,6 +50,7 @@ fun FilterChips(
                             OrderFilter.IN_PROGRESS -> "В работе"
                             OrderFilter.READY -> "Готовы"
                             OrderFilter.COMPLETED -> "Завершены"
+                            OrderFilter.PAID -> "Оплачен"
                         }
                     )
                 },

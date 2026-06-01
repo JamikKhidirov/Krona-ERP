@@ -12,6 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.client.screens.orderdetailscreen.uikit.ErrorState
 import com.example.client.screens.orderdetailscreen.uikit.OrderDetailContent
 import com.example.client.screens.orderdetailscreen.viewmodel.OrderDetailViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,6 +25,7 @@ fun OrderDetailScreen(
     val order by viewModel.order.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val currentUserId = remember { FirebaseAuth.getInstance().currentUser?.uid ?: "" }
 
 
     LaunchedEffect(orderId) {
@@ -71,6 +73,9 @@ fun OrderDetailScreen(
                 order != null -> {
                     OrderDetailContent(
                         order = order!!,
+                        orderId = orderId,
+                        viewModel = viewModel,
+                        currentUserId = currentUserId,
                         modifier = Modifier.fillMaxSize()
                     )
                 }

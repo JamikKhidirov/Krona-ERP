@@ -11,6 +11,7 @@ fun getStatusLabel(status: OrderStatus): String {
         OrderStatus.READY -> "Готов"
         OrderStatus.DELIVERING -> "Доставляется"
         OrderStatus.COMPLETED -> "Выполнен"
+        OrderStatus.PAID -> "Оплачен"
         OrderStatus.CANCELLED -> "Отменён"
     }
 }

@@ -1,5 +1,7 @@
 package com.example.manager.screens.orderdetail
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -697,6 +699,7 @@ private fun OrderActionButtons(
     onUpdateStatus: (OrderStatus) -> Unit
 ) {
     var showStatusMenu by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Column(modifier = Modifier.fillMaxWidth()) {
         when {
@@ -740,6 +743,8 @@ private fun OrderActionButtons(
                                 OrderStatus.IN_PROGRESS.name -> listOf(OrderStatus.READY, OrderStatus.CANCELLED)
                                 OrderStatus.READY.name -> listOf(OrderStatus.DELIVERING, OrderStatus.COMPLETED)
                                 OrderStatus.DELIVERING.name -> listOf(OrderStatus.COMPLETED)
+                                OrderStatus.COMPLETED.name -> listOf(OrderStatus.PAID)
+                                OrderStatus.PAID.name -> emptyList()
                                 else -> emptyList()
                             }
                             availableStatuses.forEach { status ->
@@ -756,7 +761,10 @@ private fun OrderActionButtons(
 
                     if (order.clientPhone.isNotBlank()) {
                         IconButton(
-                            onClick = { /* Intent на звонок */ },
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${order.clientPhone}"))
+                                context.startActivity(intent)
+                            },
                             modifier = Modifier.size(52.dp)
                         ) {
                             Icon(Icons.Default.Phone, "Позвонить", tint = MaterialTheme.colorScheme.tertiary)
@@ -770,7 +778,10 @@ private fun OrderActionButtons(
         if (order.clientPhone.isNotBlank() && !isMyOrder && !isUnassigned) {
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedButton(
-                onClick = { /* Intent на звонок */ },
+                onClick = {
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${order.clientPhone}"))
+                    context.startActivity(intent)
+                },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
