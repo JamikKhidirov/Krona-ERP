@@ -363,7 +363,7 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
             Spacer(modifier = Modifier.height(12.dp))
 
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest.Builder(ctx)
                     .data(imageUrls.firstOrNull())
                     .crossfade(true)
                     .build(),
