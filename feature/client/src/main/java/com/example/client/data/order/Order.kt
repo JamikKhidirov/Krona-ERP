@@ -177,18 +177,15 @@ data class Order(
         return if (diff > 0) diff / (24 * 60 * 60 * 1000) else 0
     }
 
-    /** Просрочен ли дедлайн */
     fun isOverdue(): Boolean {
         return deadlineTimestamp > 0 && deadlineTimestamp < System.currentTimeMillis() &&
-                status !in listOf("COMPLETED", "DELIVERED", "CANCELLED")
+                status !in listOf("COMPLETED", "PAID", "DELIVERED", "CANCELLED")
     }
 
-    /** Можно ли редактировать */
     fun isEditable(): Boolean {
-        return status !in listOf("COMPLETED", "DELIVERED", "CANCELLED", "ARCHIVED")
+        return status !in listOf("COMPLETED", "PAID", "DELIVERED", "CANCELLED", "ARCHIVED")
     }
 
-    /** Можно ли назначить мастера */
     fun canAssignMaster(): Boolean {
         return status in listOf("ASSIGNED", "IN_PROGRESS") && masterId.isBlank()
     }
@@ -224,10 +221,7 @@ data class Order(
     }
 
     companion object {
-        /** Статусы, при которых заказ считается активным */
         val ACTIVE_STATUSES = listOf("PENDING", "ASSIGNED", "IN_PROGRESS", "READY", "DELIVERING")
-
-        /** Статусы, при которых заказ завершён */
         val FINAL_STATUSES = listOf("COMPLETED", "PAID", "CANCELLED")
     }
 }

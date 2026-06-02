@@ -95,6 +95,12 @@ private fun getStatusConfig(status: String): StatusConfig {
             backgroundColor = Color(0xFFD1FAE5),
             dotColor = Color(0xFF10B981)
         )
+        "PAID", "ОПЛАЧЕН" -> StatusConfig(
+            label = "Оплачен",
+            textColor = Color(0xFF065F46),
+            backgroundColor = Color(0xFFD1FAE5),
+            dotColor = Color(0xFF059669)
+        )
         "CANCELLED", "CANCELED", "ОТМЕНЁН", "ОТМЕНЕН" -> StatusConfig(
             label = "Отменён",
             textColor = Color(0xFFB91C1C),

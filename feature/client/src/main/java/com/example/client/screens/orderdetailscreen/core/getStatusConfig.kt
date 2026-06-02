@@ -12,6 +12,7 @@ fun getStatusConfig(status: String): StatusConfig {
         "READY" -> StatusConfig("Готов к выдаче", Color(0xFFD1FAE5), Color(0xFF059669))
         "DELIVERING" -> StatusConfig("Доставляется", Color(0xFFFEF3C7), Color(0xFFD97706))
         "COMPLETED" -> StatusConfig("Выполнен", Color(0xFFD1FAE5), Color(0xFF059669))
+        "PAID" -> StatusConfig("Оплачен", Color(0xFFD1FAE5), Color(0xFF059669))
         "CANCELLED" -> StatusConfig("Отменён", Color(0xFFFEE2E2), Color(0xFFDC2626))
         "ACCEPTED" -> StatusConfig("Принят в работу", Color(0xFFD1FAE5), Color(0xFF059669))
         "MATERIALS" -> StatusConfig("Расход материалов", Color(0xFFFEF3C7), Color(0xFFD97706))

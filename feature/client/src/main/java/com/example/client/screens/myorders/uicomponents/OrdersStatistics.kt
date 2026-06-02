@@ -18,9 +18,9 @@ import com.example.network.data.OrderStatus
 
 @Composable
 fun OrdersStatistics(orders: List<com.example.client.data.order.Order>) {
-    val activeCount = orders.count { it.status == OrderStatus.IN_PROGRESS.name }
+    val activeCount = orders.count { it.status in listOf(OrderStatus.IN_PROGRESS.name, OrderStatus.ASSIGNED.name) }
     val pendingCount = orders.count { it.status == OrderStatus.PENDING.name }
-    val completedCount = orders.count { it.status == OrderStatus.COMPLETED.name }
+    val completedCount = orders.count { it.status in listOf(OrderStatus.COMPLETED.name, OrderStatus.PAID.name) }
 
     Card(
         modifier = Modifier

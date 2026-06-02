@@ -177,7 +177,7 @@ class ManagerStatisticsViewModel @Inject constructor(
 
                 val overdueCount = orders.count {
                     it.deadlineTimestamp > 0 && it.deadlineTimestamp < now &&
-                            it.status !in listOf("COMPLETED", "CANCELLED")
+                            it.status !in listOf("COMPLETED", "PAID", "CANCELLED")
                 }
 
                 val isClientApp = orders.any { it.userId == "" }

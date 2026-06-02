@@ -52,12 +52,12 @@ class DashboardViewModel @Inject constructor(
                 var overdue = 0
 
                 orders.forEach { order ->
-                    if (order.createdAt >= monthStart && order.status == "COMPLETED") {
+                    if (order.createdAt >= monthStart && order.status in listOf("COMPLETED", "PAID")) {
                         monthlyProfit += order.budget.extractNumber().toDouble()
                     }
 
                     if (order.deadlineTimestamp > 0 && order.deadlineTimestamp < now &&
-                        order.status != "COMPLETED" && order.status != "CANCELLED") {
+                        order.status !in listOf("COMPLETED", "PAID", "CANCELLED")) {
                         overdue++
                     }
                 }
@@ -68,7 +68,7 @@ class DashboardViewModel @Inject constructor(
                     inProgressOrders = orders.count {
                         it.status in listOf("ASSIGNED", "IN_PROGRESS", "READY", "DELIVERING")
                     },
-                    completedOrders = orders.count { it.status == "COMPLETED" },
+                    completedOrders = orders.count { it.status in listOf("COMPLETED", "PAID") },
                     cancelledOrders = orders.count { it.status == "CANCELLED" },
                     overdueOrders = overdue,
                     monthlyProfit = monthlyProfit,

@@ -1,12 +1,10 @@
 package com.example.client.screens.neworder.viewmodels
 
-import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.client.data.order.Order
 import com.example.client.repository.OrderRepository
-import com.example.client.util.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,10 +20,9 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    application: Application,
     private val repository: OrderRepository,
     private val auth: FirebaseAuth
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _orders = MutableStateFlow<List<Order>>(emptyList())
     val orders: StateFlow<List<Order>> = _orders.asStateFlow()
@@ -111,15 +108,6 @@ class OrderViewModel @Inject constructor(
             _error.value = null
             _orderCreated.value = false
 
-            val context = getApplication<Application>()
-            val base64Images = imageUris.mapNotNull { uri ->
-                ImageUtils.uriToBase64(context, uri)
-            }
-
-            if (imageUris.isNotEmpty() && base64Images.size != imageUris.size) {
-                _error.value = "Некоторые фото не удалось обработать. Заказ будет создан без них."
-            }
-
             val order = Order(
                 userId = userId,
                 productTypeId = productTypeId,
@@ -130,13 +118,13 @@ class OrderViewModel @Inject constructor(
                 heightCm = heightCm.trim(),
                 depthCm = depthCm.trim(),
                 comment = comment.trim(),
-                imageUrls = base64Images,
+                imageUrls = emptyList(),
                 address = address.trim(),
                 city = city.trim(),
                 deliveryType = "SELF_PICKUP"
             )
 
-            repository.createOrder(order)
+            repository.createOrder(order, imageUris)
                 .onSuccess { orderId ->
                     _orderCreated.value = true
                     _error.value = null

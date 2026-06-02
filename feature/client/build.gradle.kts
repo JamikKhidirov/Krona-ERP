@@ -80,6 +80,8 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:uikit"))
 
+    implementation("com.google.firebase:firebase-storage:21.0.1")
+
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")  // ← ДОБАВЬ
 }
