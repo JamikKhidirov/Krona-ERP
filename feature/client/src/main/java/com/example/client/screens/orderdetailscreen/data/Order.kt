@@ -91,7 +91,13 @@ data class Order(
     val managerName: String = "",
 
     @PropertyName("managerPhone")
-    val managerPhone: String = ""
+    val managerPhone: String = "",
+
+    @PropertyName("clientRating")
+    val clientRating: Int = 0,
+
+    @PropertyName("clientReview")
+    val clientReview: String = ""
 ) {
     // Для Firestore — нужен пустой конструктор, уже есть default values
 

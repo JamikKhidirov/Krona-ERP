@@ -134,6 +134,13 @@ class ManagerOrdersViewModel @Inject constructor(
 
     init {
         _isLoading.value = true
+        viewModelScope.launch {
+            allOrders.collect {
+                if (_isLoading.value) {
+                    _isLoading.value = false
+                }
+            }
+        }
     }
 
     private fun getManagerName(): String {

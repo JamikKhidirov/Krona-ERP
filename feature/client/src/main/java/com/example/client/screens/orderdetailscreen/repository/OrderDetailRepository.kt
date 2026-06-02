@@ -58,7 +58,9 @@ class OrderDetailRepository @Inject constructor(
                 comment = doc.getString("comment") ?: "",
                 managerId = doc.getString("managerId") ?: "",
                 managerName = doc.getString("managerName") ?: "",
-                managerPhone = doc.getString("managerPhone") ?: ""
+                managerPhone = doc.getString("managerPhone") ?: "",
+                clientRating = doc.getLong("clientRating")?.toInt() ?: 0,
+                clientReview = doc.getString("clientReview") ?: ""
             )
 
             Result.success(order)
@@ -83,6 +85,21 @@ class OrderDetailRepository @Inject constructor(
                 trySend(messages)
             }
         awaitClose { listener.remove() }
+    }
+
+    suspend fun saveReview(orderId: String, rating: Int, review: String): Result<Unit> = try {
+        val user = auth.currentUser ?: throw SecurityException("Не авторизован")
+        ordersCollection.document(orderId)
+            .update(
+                mapOf(
+                    "clientRating" to rating,
+                    "clientReview" to review,
+                    "updatedAt" to System.currentTimeMillis()
+                )
+            ).await()
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
     suspend fun sendChatMessage(orderId: String, text: String): Result<Unit> = try {

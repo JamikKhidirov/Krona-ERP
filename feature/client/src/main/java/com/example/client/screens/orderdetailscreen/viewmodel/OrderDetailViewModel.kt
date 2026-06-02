@@ -60,6 +60,15 @@ class OrderDetailViewModel @Inject constructor(
         return repository.getChatMessages(orderId)
     }
 
+    fun saveReview(orderId: String, rating: Int, review: String) {
+        viewModelScope.launch {
+            repository.saveReview(orderId, rating, review)
+                .onFailure { e ->
+                    _error.value = e.message ?: "Ошибка сохранения отзыва"
+                }
+        }
+    }
+
     fun sendChatMessage(orderId: String, text: String) {
         viewModelScope.launch {
             repository.sendChatMessage(orderId, text)

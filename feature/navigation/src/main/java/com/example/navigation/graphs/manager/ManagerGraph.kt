@@ -58,8 +58,16 @@ fun NavGraphBuilder.managerGraph(
                         ManagerDestinations.OrderDetailScreenDestination(orderId)
                     )
                 },
-                onCallClick = {},
-                onMessageClick = {}
+                onCallClick = { phone ->
+                    val ctx = LocalContext.current
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
+                    ctx.startActivity(intent)
+                },
+                onMessageClick = { phone ->
+                    val ctx = LocalContext.current
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$phone"))
+                    ctx.startActivity(intent)
+                }
             )
         }
 

@@ -97,6 +97,20 @@ fun OrderDetailContent(
             }
         }
 
+        // Отзыв о заказе
+        if (order.status in listOf("COMPLETED", "PAID")) {
+            item {
+                ReviewSection(
+                    orderId = orderId,
+                    currentRating = order.clientRating,
+                    currentReview = order.clientReview,
+                    onSaveReview = { id, rating, review ->
+                        viewModel.saveReview(id, rating, review)
+                    }
+                )
+            }
+        }
+
         // Чат с менеджером
         if (order.managerId.isNotBlank()) {
             item {
