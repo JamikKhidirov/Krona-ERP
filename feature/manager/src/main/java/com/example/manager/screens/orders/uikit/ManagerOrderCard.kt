@@ -43,16 +43,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.manager.data.Order
 import com.example.manager.data.OrderPriority
 import com.example.manager.screens.orders.core.getStatusConfig
@@ -71,7 +71,7 @@ fun ManagerOrderCard(
     val isMyOrder = order.managerId == currentManagerId
     val isUnassigned = order.managerId.isBlank() && order.status == OrderStatus.PENDING.name
     var showStatusMenu by remember { mutableStateOf(false) }
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -86,20 +86,27 @@ fun ManagerOrderCard(
         ) {
             // Фото товара (если есть)
             if (order.imageUrls.isNotEmpty()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(order.imageUrls.firstOrNull())
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Фото товара",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(160.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                    contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                    error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
-                )
+                val url = order.imageUrls.firstOrNull()
+                val bitmap = remember(url) {
+                    if (url != null) {
+                        try {
+                            val raw = url.substringAfter("base64,")
+                            val bytes = android.util.Base64.decode(raw, android.util.Base64.DEFAULT)
+                            android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                        } catch (_: Exception) { null }
+                    } else null
+                }
+                if (bitmap != null) {
+                    Image(
+                        bitmap = bitmap,
+                        contentDescription = "Фото товара",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Column(modifier = Modifier.padding(16.dp)) {
