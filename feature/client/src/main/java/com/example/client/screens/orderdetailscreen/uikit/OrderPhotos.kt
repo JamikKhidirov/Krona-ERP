@@ -2,6 +2,7 @@ package com.example.client.screens.orderdetailscreen.uikit
 
 import android.graphics.BitmapFactory
 import android.util.Base64
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,9 +29,8 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 
-private fun rememberBitmap(base64: String?): ImageBitmap? = remember(base64) {
+@Composable private fun decodedImage(base64: String?): ImageBitmap? = remember(base64) {
     if (base64 == null) return@remember null
     try {
         val raw = base64.substringAfter("base64,")
@@ -60,18 +60,16 @@ fun OrderPhotos(imageUrls: List<String>) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            val mainBitmap = rememberBitmap(imageUrls.firstOrNull())
-            if (mainBitmap != null) {
-                AsyncImage(
-                    model = mainBitmap,
+            val bitmap = decodedImage(imageUrls.firstOrNull())
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap,
                     contentDescription = "Фото изделия",
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
                         .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                    error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 Box(
@@ -92,17 +90,15 @@ fun OrderPhotos(imageUrls: List<String>) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     imageUrls.drop(1).take(3).forEach { url ->
-                        val thumbBitmap = rememberBitmap(url)
-                        if (thumbBitmap != null) {
-                            AsyncImage(
-                                model = thumbBitmap,
+                        val thumb = decodedImage(url)
+                        if (thumb != null) {
+                            Image(
+                                bitmap = thumb,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(80.dp)
                                     .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop,
-                                placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                                error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+                                contentScale = ContentScale.Crop
                             )
                         } else {
                             Box(

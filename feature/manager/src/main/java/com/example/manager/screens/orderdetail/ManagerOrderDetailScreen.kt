@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,14 +16,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.AddTask
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,14 +45,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.manager.data.Order
 import com.example.manager.data.OrderHistoryItem
 import com.example.manager.data.OrderPriority
@@ -312,7 +326,7 @@ private fun OrderDetailHeader(order: Order) {
 }
 
 @Composable
-private fun rememberBitmap(base64: String?): ImageBitmap? = remember(base64) {
+private fun decodedImage(base64: String?): ImageBitmap? = remember(base64) {
     if (base64 == null) return@remember null
     try {
         val raw = base64.substringAfter("base64,")
@@ -321,6 +335,7 @@ private fun rememberBitmap(base64: String?): ImageBitmap? = remember(base64) {
     } catch (_: Exception) { null }
 }
 
+@Composable
 private fun OrderPhotosSection(imageUrls: List<String>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -336,15 +351,13 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            val mainBitmap = rememberBitmap(imageUrls.firstOrNull())
+            val mainBitmap = decodedImage(imageUrls.firstOrNull())
             if (mainBitmap != null) {
-                AsyncImage(
-                    model = mainBitmap,
+                Image(
+                    bitmap = mainBitmap,
                     contentDescription = "Фото товара",
                     modifier = Modifier.fillMaxWidth().height(220.dp).clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                    error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 Box(
@@ -361,15 +374,13 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(imageUrls.drop(1).take(4)) { url ->
-                        val thumbBitmap = rememberBitmap(url)
-                        if (thumbBitmap != null) {
-                            AsyncImage(
-                                model = thumbBitmap,
+                        val thumb = decodedImage(url)
+                        if (thumb != null) {
+                            Image(
+                                bitmap = thumb,
                                 contentDescription = null,
                                 modifier = Modifier.size(80.dp).clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop,
-                                placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                                error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+                                contentScale = ContentScale.Crop
                             )
                         } else {
                             Box(
@@ -691,7 +702,7 @@ private fun OrderActionButtons(
     onUpdateStatus: (OrderStatus) -> Unit
 ) {
     var showStatusMenu by remember { mutableStateOf(false) }
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxWidth()) {
         when {
