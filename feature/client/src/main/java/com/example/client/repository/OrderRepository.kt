@@ -1,24 +1,25 @@
 package com.example.client.repository
 
+import android.content.Context
 import android.net.Uri
 import com.example.client.data.order.Order
+import com.example.client.util.ImageUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.storage.FirebaseStorage
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-
-
 
 @Singleton
 class OrderRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val storage: FirebaseStorage
+    @ApplicationContext private val context: Context
 ) {
     private val ordersCollection = firestore.collection("orders")
 
@@ -31,11 +32,11 @@ class OrderRepository @Inject constructor(
             val docRef = ordersCollection.document()
             val orderId = docRef.id
 
-            val uploadedUrls = uploadImages(orderId, imageUris)
+            val base64Images = convertToBase64(imageUris)
 
             val finalOrder = order.copy(
                 id = orderId,
-                imageUrls = uploadedUrls,
+                imageUrls = base64Images,
                 createdAt = System.currentTimeMillis(),
                 status = "PENDING"
             )
@@ -48,21 +49,16 @@ class OrderRepository @Inject constructor(
         }
     }
 
-    private suspend fun uploadImages(orderId: String, imageUris: List<Uri>): List<String> {
-        if (imageUris.isEmpty()) return emptyList()
-        val storageRef = storage.reference.child("order_images/$orderId")
-        val urls = mutableListOf<String>()
-        for ((index, uri) in imageUris.withIndex()) {
+    private suspend fun convertToBase64(imageUris: List<Uri>): List<String> = withContext(Dispatchers.IO) {
+        if (imageUris.isEmpty()) return@withContext emptyList()
+        imageUris.mapNotNull { uri ->
             try {
-                val imageRef = storageRef.child("${UUID.randomUUID()}.jpg")
-                imageRef.putFile(uri).await()
-                val downloadUrl = imageRef.downloadUrl.await()
-                urls.add(downloadUrl.toString())
+                ImageUtils.uriToBase64(context, uri)
             } catch (e: Exception) {
                 e.printStackTrace()
+                null
             }
         }
-        return urls
     }
 
     fun getUserOrders(userId: String): Flow<List<Order>> = callbackFlow {
@@ -92,7 +88,6 @@ class OrderRepository @Inject constructor(
 
         awaitClose { listener.remove() }
     }
-
 
     fun getAllOrders(): Flow<List<Order>> = callbackFlow {
         val listener = ordersCollection
