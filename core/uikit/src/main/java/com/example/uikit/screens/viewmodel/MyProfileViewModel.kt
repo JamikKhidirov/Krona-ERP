@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,13 +45,31 @@ class MyProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                firestore.collection("users")
+                val userDoc = firestore.collection("users")
                     .document(uid)
                     .get()
                     .await()
-                    .toObject(Client::class.java)
-                    ?.let { _client.value = it.copy(id = uid, uid = uid) }
-                    ?: run { _error.value = "Профиль не найден" }
+                val client = userDoc.toObject(Client::class.java)?.copy(id = uid, uid = uid)
+
+                val orders = firestore.collection("orders")
+                    .whereEqualTo("userId", uid)
+                    .get()
+                    .await()
+
+                val totalOrders = orders.size()
+                val activeOrders = orders.documents.count { doc ->
+                    val status = doc.getString("status") ?: ""
+                    status in listOf("PENDING", "ASSIGNED", "IN_PROGRESS", "READY", "DELIVERING")
+                }
+                val totalSpent = orders.documents.sumOf { doc ->
+                    doc.getString("budget")?.replace(Regex("[^0-9]"), "")?.toLongOrNull() ?: 0
+                }
+
+                _client.value = client?.copy(
+                    orderCount = totalOrders,
+                    activeOrderCount = activeOrders,
+                    totalSpent = String.format("%,d", totalSpent).replace(",", " ")
+                )
             } catch (e: Exception) {
                 _error.value = e.message
             }

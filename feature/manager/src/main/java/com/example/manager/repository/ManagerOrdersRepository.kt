@@ -3,6 +3,7 @@ package com.example.manager.repository
 import com.example.manager.data.ChatMessage
 import com.example.manager.data.Order
 import com.example.manager.data.OrderHistoryItem
+import com.example.manager.screens.chats.ChatThread
 import com.example.network.data.OrderStatus
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -450,7 +451,63 @@ class ManagerOrdersRepository @Inject constructor(
             "timestamp" to System.currentTimeMillis()
         )
         chatRef.set(message).await()
+
+        val orderDoc = ordersCollection.document(orderId).get().await()
+        val clientUserId = orderDoc.getString("userId") ?: ""
+        if (clientUserId.isNotBlank() && clientUserId != user.uid) {
+            writeChatNotification(orderId, clientUserId, name, text)
+        }
+
         Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    private suspend fun writeChatNotification(orderId: String, userId: String, senderName: String, text: String) {
+        try {
+            val notifRef = firestore.collection("notifications").document()
+            notifRef.set(mapOf(
+                "id" to notifRef.id,
+                "userId" to userId,
+                "orderId" to orderId,
+                "title" to "Новое сообщение от $senderName",
+                "body" to text,
+                "createdAt" to System.currentTimeMillis(),
+                "read" to false,
+                "type" to "chat"
+            )).await()
+        } catch (_: Exception) { }
+    }
+
+    suspend fun getChatThreads(managerId: String): Result<List<ChatThread>> = try {
+        val orders = ordersCollection
+            .whereEqualTo("managerId", managerId)
+            .get()
+            .await()
+
+        val threads = orders.documents.mapNotNull { doc ->
+            val order = doc.toObject(Order::class.java) ?: return@mapNotNull null
+            val chatDocs = ordersCollection
+                .document(doc.id)
+                .collection("chat")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .await()
+            val lastMsg = chatDocs.documents.firstOrNull()?.toObject(ChatMessage::class.java)
+            if (lastMsg != null) {
+                ChatThread(
+                    orderId = doc.id,
+                    orderTitle = order.title,
+                    clientName = order.clientName,
+                    lastMessage = lastMsg.text,
+                    lastMessageTime = lastMsg.timestamp,
+                    unreadCount = 0
+                )
+            } else null
+        }
+
+        Result.success(threads)
     } catch (e: Exception) {
         Result.failure(e)
     }

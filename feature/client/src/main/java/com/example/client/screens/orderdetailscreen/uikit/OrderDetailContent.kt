@@ -28,6 +28,7 @@ fun OrderDetailContent(
     orderId: String,
     viewModel: OrderDetailViewModel,
     currentUserId: String,
+    statusHistory: List<StatusUpdate> = emptyList(),
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -39,7 +40,7 @@ fun OrderDetailContent(
     ) {
         item { OrderHeader(order) }
 
-        item { StatusTimeline(order.statusHistory) }
+        item { StatusTimeline(statusHistory.ifEmpty { order.statusHistory }) }
 
         if (order.imageUrls.isNotEmpty()) {
             item { OrderPhotos(order.imageUrls) }

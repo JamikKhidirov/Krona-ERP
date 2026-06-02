@@ -55,6 +55,10 @@ fun EditProfileDialog(
     var phone by remember { mutableStateOf(client.phone) }
     var email by remember { mutableStateOf(client.email) }
     var address by remember { mutableStateOf(client.address) }
+    var emailError by remember { mutableStateOf<String?>(null) }
+
+    val isEmailValid = email.contains("@")
+    val isFormValid = firstName.isNotBlank() && lastName.isNotBlank() && email.isNotBlank() && isEmailValid
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -90,9 +94,14 @@ fun EditProfileDialog(
                 )
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                        emailError = if (it.isNotBlank() && !it.contains("@")) "Email должен содержать @" else null
+                    },
                     label = { Text("Email") },
                     singleLine = true,
+                    isError = emailError != null,
+                    supportingText = emailError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
                 OutlinedTextField(
@@ -116,7 +125,8 @@ fun EditProfileDialog(
                             address = address
                         )
                     )
-                }
+                },
+                enabled = isFormValid
             ) {
                 Text("Сохранить")
             }

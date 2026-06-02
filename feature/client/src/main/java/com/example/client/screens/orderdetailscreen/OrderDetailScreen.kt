@@ -28,8 +28,11 @@ fun OrderDetailScreen(
     val currentUserId = remember { FirebaseAuth.getInstance().currentUser?.uid ?: "" }
 
 
+    val history by viewModel.history.collectAsState()
+
     LaunchedEffect(orderId) {
         viewModel.loadOrder(orderId)
+        viewModel.observeHistory(orderId)
     }
 
     Scaffold(
@@ -76,6 +79,7 @@ fun OrderDetailScreen(
                         orderId = orderId,
                         viewModel = viewModel,
                         currentUserId = currentUserId,
+                        statusHistory = history,
                         modifier = Modifier.fillMaxSize()
                     )
                 }

@@ -2,6 +2,7 @@ package com.example.client.screens.orderdetailscreen.repository
 
 import com.example.client.screens.orderdetailscreen.data.ChatMessage
 import com.example.client.screens.orderdetailscreen.data.Order
+import com.example.client.screens.orderdetailscreen.data.StatusUpdate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -102,6 +103,28 @@ class OrderDetailRepository @Inject constructor(
         Result.failure(e)
     }
 
+    fun getOrderHistoryFlow(orderId: String): Flow<List<StatusUpdate>> = callbackFlow {
+        val listener = ordersCollection
+            .document(orderId)
+            .collection("history")
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
+                val history = snapshot?.documents?.mapNotNull { doc ->
+                    val status = doc.getString("status") ?: ""
+                    val timestamp = doc.getLong("timestamp") ?: 0L
+                    val comment = doc.getString("comment") ?: ""
+                    val managerName = doc.getString("managerName") ?: ""
+                    StatusUpdate(status = status, timestamp = timestamp, comment = comment, managerName = managerName)
+                } ?: emptyList()
+                trySend(history)
+            }
+        awaitClose { listener.remove() }
+    }
+
     suspend fun sendChatMessage(orderId: String, text: String): Result<Unit> = try {
         val user = auth.currentUser ?: throw SecurityException("Не авторизован")
         val chatRef = ordersCollection
@@ -117,8 +140,31 @@ class OrderDetailRepository @Inject constructor(
             "timestamp" to System.currentTimeMillis()
         )
         chatRef.set(message).await()
+
+        val orderDoc = ordersCollection.document(orderId).get().await()
+        val managerUserId = orderDoc.getString("managerId") ?: ""
+        if (managerUserId.isNotBlank() && managerUserId != user.uid) {
+            writeChatNotification(orderId, managerUserId, name, text)
+        }
+
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    private suspend fun writeChatNotification(orderId: String, userId: String, senderName: String, text: String) {
+        try {
+            val notifRef = firestore.collection("notifications").document()
+            notifRef.set(mapOf(
+                "id" to notifRef.id,
+                "userId" to userId,
+                "orderId" to orderId,
+                "title" to "Новое сообщение от $senderName",
+                "body" to text,
+                "createdAt" to System.currentTimeMillis(),
+                "read" to false,
+                "type" to "chat"
+            )).await()
+        } catch (_: Exception) { }
     }
 }

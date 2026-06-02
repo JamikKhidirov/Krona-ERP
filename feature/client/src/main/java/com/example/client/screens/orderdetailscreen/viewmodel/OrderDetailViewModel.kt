@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.client.screens.orderdetailscreen.data.ChatMessage
 import com.example.client.screens.orderdetailscreen.data.Order
+import com.example.client.screens.orderdetailscreen.data.StatusUpdate
 import com.example.client.screens.orderdetailscreen.repository.OrderDetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +31,17 @@ class OrderDetailViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    private val _history = MutableStateFlow<List<StatusUpdate>>(emptyList())
+    val history: StateFlow<List<StatusUpdate>> = _history.asStateFlow()
 
+    fun observeHistory(orderId: String) {
+        viewModelScope.launch {
+            repository.getOrderHistoryFlow(orderId)
+                .collect { historyList ->
+                    _history.value = historyList
+                }
+        }
+    }
 
     fun loadOrder(orderId: String) {
         if (orderId.isEmpty()) {

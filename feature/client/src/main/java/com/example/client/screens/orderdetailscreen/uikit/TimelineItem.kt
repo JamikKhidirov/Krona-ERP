@@ -85,9 +85,10 @@ fun TimelineItem(
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            if (status.date.isNotEmpty()) {
+            val displayDate = status.displayDate
+            if (displayDate.isNotEmpty()) {
                 Text(
-                    text = status.date,
+                    text = displayDate,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 2.dp)

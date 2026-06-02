@@ -1,5 +1,7 @@
 package com.example.navigation.graphs.manager
 
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -12,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.example.manager.screens.chats.ChatListScreen
 import com.example.manager.screens.clentscreen.ClientsScreen
 import com.example.manager.screens.dashboard.uikit.DashboardScreen
 import com.example.manager.screens.orderdetail.ManagerOrderDetailScreen
@@ -47,6 +50,7 @@ fun NavGraphBuilder.managerGraph(
 
         composable<ManagerDestinations.ClientDetailScreenDestination> {backStackEntry ->
             val destination = backStackEntry.toRoute<ManagerDestinations.ClientDetailScreenDestination>()
+            val ctx = LocalContext.current
             UserDetailScreen(
                 navController = navController,
                 clientId = destination.clientId,
@@ -59,12 +63,10 @@ fun NavGraphBuilder.managerGraph(
                     )
                 },
                 onCallClick = { phone ->
-                    val ctx = LocalContext.current
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
                     ctx.startActivity(intent)
                 },
                 onMessageClick = { phone ->
-                    val ctx = LocalContext.current
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$phone"))
                     ctx.startActivity(intent)
                 }
@@ -103,6 +105,19 @@ fun NavGraphBuilder.managerGraph(
         composable<ManagerDestinations.StatisticsScreenDestination> {
             ManagerStatisticsScreen(
                 navController = navController
+            )
+        }
+
+        composable<ManagerDestinations.ChatListScreenDestination> {
+            ChatListScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onChatClick = { orderId ->
+                    navController.navigate(
+                        ManagerDestinations.OrderDetailScreenDestination(orderId)
+                    )
+                }
             )
         }
 
