@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,7 +30,6 @@ import com.example.uikit.Client
 @Composable
 fun ClientsScreen(
     onClientClick: (String) -> Unit,
-    onSettingsClick: () -> Unit,
     navController: NavHostController,
     viewModel: ClientsViewModel = hiltViewModel()
 ) {
@@ -49,15 +47,6 @@ fun ClientsScreen(
                             "База клиентов",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Настройки",
-                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },

@@ -1,5 +1,7 @@
 package com.example.client.screens.orderdetailscreen.uikit
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,16 +18,26 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
+
+private fun rememberBitmap(base64: String?): ImageBitmap? = remember(base64) {
+    if (base64 == null) return@remember null
+    try {
+        val raw = base64.substringAfter("base64,")
+        val bytes = Base64.decode(raw, Base64.DEFAULT)
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+    } catch (_: Exception) { null }
+}
 
 @Composable
 fun OrderPhotos(imageUrls: List<String>) {
@@ -48,20 +60,31 @@ fun OrderPhotos(imageUrls: List<String>) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrls.firstOrNull())
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "Фото изделия",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop,
-                placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
-            )
+            val mainBitmap = rememberBitmap(imageUrls.firstOrNull())
+            if (mainBitmap != null) {
+                AsyncImage(
+                    model = mainBitmap,
+                    contentDescription = "Фото изделия",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop,
+                    placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                    error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.errorContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Фото не загружено", color = MaterialTheme.colorScheme.onErrorContainer)
+                }
+            }
 
             if (imageUrls.size > 1) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -69,19 +92,26 @@ fun OrderPhotos(imageUrls: List<String>) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     imageUrls.drop(1).take(3).forEach { url ->
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(url)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop,
-                            placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
-                            error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
-                        )
+                        val thumbBitmap = rememberBitmap(url)
+                        if (thumbBitmap != null) {
+                            AsyncImage(
+                                model = thumbBitmap,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.Crop,
+                                placeholder = ColorPainter(MaterialTheme.colorScheme.outlineVariant),
+                                error = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.errorContainer)
+                            )
+                        }
                     }
                     if (imageUrls.size > 4) {
                         Box(

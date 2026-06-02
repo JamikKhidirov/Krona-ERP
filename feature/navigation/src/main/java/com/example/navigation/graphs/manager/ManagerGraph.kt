@@ -43,7 +43,6 @@ fun NavGraphBuilder.managerGraph(
                         ManagerDestinations.ClientDetailScreenDestination(client)
                     )
                 },
-                onSettingsClick = {},
                 navController
             )
         }
