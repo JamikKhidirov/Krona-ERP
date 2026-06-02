@@ -347,6 +347,7 @@ private fun OrderDetailHeader(order: Order) {
 
 @Composable
 private fun OrderPhotosSection(imageUrls: List<String>) {
+    val ctx = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -378,7 +379,8 @@ private fun OrderPhotosSection(imageUrls: List<String>) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(imageUrls.drop(1).take(4)) { url ->
                         AsyncImage(
-                            model = url,
+                            model = ImageRequest.Builder(ctx)
+                                .data(url).crossfade(true).build(),
                             contentDescription = null,
                             modifier = Modifier.size(80.dp).clip(RoundedCornerShape(8.dp)),
                             contentScale = ContentScale.Crop,
