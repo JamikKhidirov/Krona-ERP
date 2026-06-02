@@ -45,7 +45,6 @@ import com.example.uikit.screens.uikit.MyProfileHeader
 import com.example.uikit.screens.uikit.MyStatisticsCard
 import com.example.uikit.screens.uikit.SettingsSection
 import com.example.uikit.screens.viewmodel.MyProfileViewModel
-import com.example.uikit.screens.viewmodel.NavigationEvent
 import com.example.uikit.uikit.ClientBottomNavigation
 
 

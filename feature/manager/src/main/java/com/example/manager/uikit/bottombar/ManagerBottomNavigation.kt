@@ -17,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
@@ -50,6 +51,11 @@ fun ManagerBottomNavigation(
             route = ManagerDestinations.StatisticsScreenDestination
         ),
 
+        ManagerBottomNavItem(
+            label = "Чаты",
+            icon = Icons.Default.Chat,
+            route = ManagerDestinations.ChatListScreenDestination
+        ),
         ManagerBottomNavItem(
             label = "Профиль",
             icon = Icons.Default.Person,
