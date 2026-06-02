@@ -3,6 +3,7 @@ package com.example.client.repository
 import android.content.Context
 import android.net.Uri
 import com.example.client.data.order.Order
+import com.example.client.screens.chats.ChatThread
 import com.example.client.util.ImageUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -106,6 +107,39 @@ class OrderRepository @Inject constructor(
             }
 
         awaitClose { listener.remove() }
+    }
+
+    suspend fun getChatThreads(userId: String): Result<List<ChatThread>> = try {
+        val orders = ordersCollection
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
+
+        val threads = orders.documents.mapNotNull { doc ->
+            val order = doc.toObject(Order::class.java)?.copy(id = doc.id) ?: return@mapNotNull null
+            val chatDocs = ordersCollection
+                .document(doc.id)
+                .collection("chat")
+                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .await()
+            val lastMsg = chatDocs.documents.firstOrNull()?.toObject(com.example.client.screens.orderdetailscreen.data.ChatMessage::class.java)
+            if (lastMsg != null) {
+                ChatThread(
+                    orderId = doc.id,
+                    orderTitle = order.title,
+                    clientName = "",
+                    lastMessage = lastMsg.text,
+                    lastMessageTime = lastMsg.timestamp,
+                    unreadCount = 0
+                )
+            } else null
+        }
+
+        Result.success(threads)
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
     suspend fun getOrderById(orderId: String): Result<Order> = try {

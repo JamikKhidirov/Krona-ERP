@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.auth.screens.data.AuthState
 import com.example.auth.screens.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

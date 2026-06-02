@@ -2,6 +2,7 @@ package com.example.uikit.uikit
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -26,15 +27,19 @@ fun ClientBottomNavigation(
     val items = listOf(
         ClientBottomNavItem(
             label = "Мои заказы",
-            icon = Icons.Default.List, // или Icons.Default.ShoppingBag
+            icon = Icons.Default.List,
             route = ClientDestinations.MyOrdersScreenDestination
         ),
         ClientBottomNavItem(
             label = "Новый заказ",
-            icon = Icons.Default.Add, // или Icons.Default.Create
+            icon = Icons.Default.Add,
             route = ClientDestinations.NewOrderScreenDestinations
         ),
-
+        ClientBottomNavItem(
+            label = "Чаты",
+            icon = Icons.Default.Chat,
+            route = ClientDestinations.ChatListScreenDestination
+        ),
         ClientBottomNavItem(
             label = "Профиль",
             icon = Icons.Default.Person,

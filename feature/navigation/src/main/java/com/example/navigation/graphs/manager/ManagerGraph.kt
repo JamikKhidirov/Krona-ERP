@@ -110,13 +110,13 @@ fun NavGraphBuilder.managerGraph(
 
         composable<ManagerDestinations.ChatListScreenDestination> {
             ChatListScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
                 onChatClick = { orderId ->
                     navController.navigate(
                         ManagerDestinations.OrderDetailScreenDestination(orderId)
                     )
+                },
+                bottomBar = {
+                    ManagerBottomNavigation(navController = navController)
                 }
             )
         }

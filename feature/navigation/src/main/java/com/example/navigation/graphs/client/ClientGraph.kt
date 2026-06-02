@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.example.client.screens.chats.ChatListScreen
 import com.example.client.screens.myorders.MyOrdersScreen
 import com.example.client.screens.neworder.NewOrderScreen
 import com.example.client.screens.orderdetailscreen.OrderDetailScreen
@@ -66,6 +67,19 @@ fun NavGraphBuilder.clientGraph(
             )
         }
 
+
+        composable<ClientDestinations.ChatListScreenDestination> {
+            ChatListScreen(
+                onChatClick = { orderId ->
+                    navController.navigate(
+                        ClientDestinations.OrderDetailScreenDestinations(orderId)
+                    )
+                },
+                bottomBar = {
+                    ClientBottomNavigation(navController = navController)
+                }
+            )
+        }
 
         composable<ClientDestinations.NewOrderScreenDestinations>{
             NewOrderScreen(

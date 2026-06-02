@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.manager.screens.clentscreen.repository.ClientRepository
 import com.example.uikit.Client
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

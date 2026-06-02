@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import jakarta.inject.Inject
+import javax.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.tasks.await
 
